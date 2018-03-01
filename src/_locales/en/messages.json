@@ -1,0 +1,42 @@
+{
+  "extensionName": {
+    "message": "Scroll Zoom",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message":
+      "Zoom web pages with the left or right mouse button and the scroll wheel.",
+    "description": "Description of the extension."
+  },
+
+  "optionValue_mouseButton_primary": {
+    "message": "Zoom with primary mouse button and scroll wheel",
+    "description": "Value of the option."
+  },
+
+  "optionValue_mouseButton_secondary": {
+    "message": "Zoom with secondary mouse button and scroll wheel",
+    "description": "Value of the option."
+  },
+
+  "pageTitle": {
+    "message": "$PAGETITLE$ - $EXTENSIONNAME$",
+    "description": "Title of the page.",
+    "placeholders": {
+      "pageTitle": {
+        "content": "$1",
+        "example": "Options"
+      },
+      "extensionName": {
+        "content": "$2",
+        "example": "Extension Name"
+      }
+    }
+  },
+
+  "pageTitle_options": {
+    "message": "Options",
+    "description": "Title of the page."
+  }
+}
