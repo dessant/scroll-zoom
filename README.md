@@ -4,7 +4,7 @@
 <p align="center">
   </br></br>
   <a href="https://goo.gl/DX6325">
-    <img src="https://i.imgur.com/IuvTttN.png" alt="Firefox add-ons"></a>
+    <img src="https://i.imgur.com/dvof8rG.png" alt="Firefox add-ons"></a>
   </br></br>
 </p>
 
