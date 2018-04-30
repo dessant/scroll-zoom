@@ -10,13 +10,18 @@
     "description": "Description of the extension."
   },
 
+  "optionTitle_zoomGesture": {
+    "message": "Zoom gesture",
+    "description": "Value of the option."
+  },
+
   "optionValue_mouseButton_primary": {
-    "message": "Zoom with primary mouse button and scroll wheel",
+    "message": "Primary mouse button and scroll wheel",
     "description": "Value of the option."
   },
 
   "optionValue_mouseButton_secondary": {
-    "message": "Zoom with secondary mouse button and scroll wheel",
+    "message": "Secondary mouse button and scroll wheel",
     "description": "Value of the option."
   },
 

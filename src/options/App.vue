@@ -2,8 +2,9 @@
 <div id="app" v-if="dataLoaded">
   <div class="section">
     <div class="option-wrap">
-      <div class="option">
-        <v-select v-model="options.mouseButton"
+      <div class="option select">
+        <v-select :label="getText('optionTitle_zoomGesture')"
+            v-model="options.mouseButton"
             :options="selectOptions.mouseButton">
         </v-select>
       </div>
@@ -40,6 +41,10 @@ export default {
     };
   },
 
+  methods: {
+    getText
+  },
+
   created: async function() {
     const options = await storage.get(optionKeys, 'sync');
 
@@ -71,6 +76,7 @@ body {
   min-height: 200px;
   @include mdc-typography-base;
   font-size: 100%;
+  overflow: visible !important;
 }
 
 #app {
@@ -108,5 +114,9 @@ body {
   display: flex;
   align-items: center;
   height: 36px;
+}
+
+.option.select {
+  height: 56px;
 }
 </style>
