@@ -1,6 +1,6 @@
 {
   "name": "scroll-zoom",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Armin Sebastian",
   "repository": "https://github.com/dessant/scroll-zoom",
   "license": "MIT",
@@ -22,7 +22,11 @@
     "push": "git push --follow-tags origin master",
     "release": "standard-version && yarn run push"
   },
-  "browserslist": ["Chrome >= 55", "Firefox >= 58", "Opera >= 42"],
+  "browserslist": [
+    "Chrome >= 55",
+    "Firefox >= 58",
+    "Opera >= 42"
+  ],
   "dependencies": {
     "@material/theme": "^0.30.0",
     "@material/typography": "^0.28.0",
