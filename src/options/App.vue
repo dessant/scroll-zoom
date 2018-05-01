@@ -76,6 +76,7 @@ body {
   min-height: 200px;
   @include mdc-typography-base;
   font-size: 100%;
+  background-color: #ffffff;
   overflow: visible !important;
 }
 
