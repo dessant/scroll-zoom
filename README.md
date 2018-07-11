@@ -12,17 +12,17 @@
   </br></br>
 </p>
 
-## Description
-
-Scroll Zoom is a browser extension which lets you zoom web pages
-with the left or right mouse button and the scroll wheel.
-
 ## Supporting the Project
 
 The continued development of Scroll Zoom is made possible
 thanks to the support of awesome backers. If you'd like to join them,
 please consider contributing with [Patreon](https://goo.gl/qRhKSW),
 [PayPal](https://goo.gl/5FnBaw) or [Bitcoin](https://goo.gl/uJUAaU).
+
+## Description
+
+Scroll Zoom is a browser extension which lets you zoom web pages
+with the left or right mouse button and the scroll wheel.
 
 ## License
 
