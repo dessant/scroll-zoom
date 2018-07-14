@@ -32,7 +32,9 @@
   "dependencies": {
     "@material/theme": "^0.30.0",
     "@material/typography": "^0.28.0",
+    "closest-to": "^2.0.0",
     "ext-components": "dessant/ext-components#^0.1.3",
+    "p-queue": "^2.4.2",
     "storage-versions": "dessant/storage-versions#^0.1.1",
     "typeface-roboto": "^0.0.54",
     "vue": "^2.5.13",

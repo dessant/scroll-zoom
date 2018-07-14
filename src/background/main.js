@@ -1,8 +1,15 @@
 import browser from 'webextension-polyfill';
+import closest from 'closest-to';
+import Queue from 'p-queue';
 
 import storage from 'storage/storage';
 import {targetEnv} from 'utils/config';
-import {zoomFactors} from 'utils/data';
+import {chromeZoomFactors, firefoxZoomFactors} from 'utils/data';
+
+const queue = new Queue({concurrency: 1});
+
+const zoomFactors =
+  targetEnv === 'firefox' ? firefoxZoomFactors : chromeZoomFactors;
 
 async function setContextMenuEvent() {
   if (targetEnv === 'firefox') {
@@ -19,20 +26,22 @@ async function onStorageChange(changes, area) {
   await setContextMenuEvent();
 }
 
-async function onMessage(request, sender, sendResponse) {
+function onMessage(request, sender, sendResponse) {
   if (request.id === 'zoomPage') {
-    const {mouseButton} = await storage.get('mouseButton', 'sync');
-    if (request.button !== mouseButton) {
-      return;
-    }
-    let zoomFactor = await browser.tabs.getZoom();
-    const isUp = request.isScrollUp;
-    if ((zoomFactor === 0.3 && !isUp) || (zoomFactor === 3 && isUp)) {
-      return;
-    }
-    zoomFactor = zoomFactors[zoomFactors.indexOf(zoomFactor) + (isUp ? 1 : -1)];
-    await browser.tabs.setZoom(zoomFactor);
+    queue.add(() => zoomPage(sender.tab.id, request.zoomIn));
   }
+}
+
+async function zoomPage(tabId, zoomIn) {
+  let zoomFactor = closest(await browser.tabs.getZoom(), zoomFactors);
+  const newZoomFactor =
+    zoomFactors[zoomFactors.indexOf(zoomFactor) + (zoomIn ? 1 : -1)];
+
+  if (newZoomFactor) {
+    zoomFactor = newZoomFactor;
+  }
+
+  await browser.tabs.setZoom(tabId, zoomFactor);
 }
 
 function addStorageListener() {

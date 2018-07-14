@@ -120,6 +120,9 @@ gulp.task('manifest', function() {
           if (['chrome', 'opera'].includes(targetEnv)) {
             delete parsedJson.applications;
             delete parsedJson.options_ui.browser_style;
+            parsedJson.permissions = parsedJson.permissions.filter(
+              item => item !== 'browserSettings'
+            );
           }
 
           if (['chrome', 'firefox'].includes(targetEnv)) {
