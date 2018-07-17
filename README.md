@@ -3,9 +3,9 @@
 
 <p align="center">
   </br></br>
-  <a href="">
+  <a href="https://chrome.google.com/webstore/detail/scroll-zoom/ccfomhdaagemnbhbpminjoggkbglmcgb">
     <img src="https://i.imgur.com/q6E8SOD.png" alt="Chrome Web Store"></a>
-  <a href="https://goo.gl/DX6325">
+  <a href="https://addons.mozilla.org/en-US/firefox/addon/scroll-zoom/">
     <img src="https://i.imgur.com/dvof8rG.png" alt="Firefox add-ons"></a>
   <a href="">
     <img src="https://i.imgur.com/wK10qEV.png" alt="Opera add-ons"></a>
