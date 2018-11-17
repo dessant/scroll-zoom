@@ -63,6 +63,7 @@
     "gulp-sequence": "^1.0.0",
     "node-sass": "^4.7.2",
     "npm-check-updates": "^2.14.1",
+    "prettier": "^1.15.2",
     "recursive-readdir": "^2.2.2",
     "sass-loader": "^6.0.6",
     "standard-version": "^4.3.0",
