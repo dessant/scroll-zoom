@@ -12,7 +12,7 @@
 
   "optionTitle_zoomGesture": {
     "message": "Zoom gesture",
-    "description": "Value of the option."
+    "description": "Title of the option."
   },
 
   "optionValue_mouseButton_primary": {
