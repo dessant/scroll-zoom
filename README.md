@@ -28,5 +28,7 @@ with the left or right mouse button and the scroll wheel.
 
 ## License
 
-Scroll Zoom is released under the terms of the MIT License.
-Please refer to the LICENSE file.
+Copyright (c) 2017-2019 Armin Sebastian
+
+This software is released under the terms of the GNU General Public License v3.0.
+See the [LICENSE](LICENSE) file for further information.
