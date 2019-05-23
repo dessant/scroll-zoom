@@ -31,7 +31,4 @@ function getOptionLabels(data, scope = 'optionValue') {
   return labels;
 }
 
-module.exports = {
-  showNotification,
-  getOptionLabels
-};
+export {showNotification, getOptionLabels};

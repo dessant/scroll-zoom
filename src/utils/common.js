@@ -29,9 +29,4 @@ async function scriptsAllowed(tabId, frameId = 0) {
   } catch (e) {}
 }
 
-module.exports = {
-  getText,
-  executeCode,
-  executeFile,
-  scriptsAllowed
-};
+export {getText, executeCode, executeFile, scriptsAllowed};

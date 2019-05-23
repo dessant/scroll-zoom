@@ -4,7 +4,7 @@
 <p align="center">
   </br></br>
   <a href="https://chrome.google.com/webstore/detail/scroll-zoom/ccfomhdaagemnbhbpminjoggkbglmcgb">
-    <img src="https://i.imgur.com/q6E8SOD.png" alt="Chrome Web Store"></a>
+    <img src="https://i.imgur.com/B0i5sn3.png" alt="Chrome Web Store"></a>
   <a href="https://addons.mozilla.org/en-US/firefox/addon/scroll-zoom/">
     <img src="https://i.imgur.com/dvof8rG.png" alt="Firefox add-ons"></a>
   <a href="">
@@ -16,8 +16,10 @@
 
 The continued development of Scroll Zoom is made possible
 thanks to the support of awesome backers. If you'd like to join them,
-please consider contributing with [Patreon](https://goo.gl/qRhKSW),
-[PayPal](https://goo.gl/5FnBaw) or [Bitcoin](https://goo.gl/uJUAaU).
+please consider contributing with
+[Patreon](https://armin.dev/go/patreon?pr=scroll-zoom&src=repo),
+[PayPal](https://armin.dev/go/paypal?pr=scroll-zoom&src=repo) or
+[Bitcoin](https://armin.dev/go/bitcoin?pr=scroll-zoom&src=repo).
 
 ## Description
 

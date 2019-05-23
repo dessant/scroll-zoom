@@ -1,10 +1,8 @@
 {
-  "presets": [
-    [
-      "env",
-      {
-        "targets": {"chrome": 55, "firefox": 58, "opera": 42}
-      }
-    ]
-  ]
+  "presets": ["@babel/env"],
+  "env": {
+    "production": {
+      "presets": [["minify", {"deadcode": false}]]
+    }
+  }
 }

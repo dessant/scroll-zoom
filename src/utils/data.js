@@ -37,8 +37,4 @@ const firefoxZoomFactors = [
   3
 ];
 
-module.exports = {
-  optionKeys,
-  chromeZoomFactors,
-  firefoxZoomFactors
-};
+export {optionKeys, chromeZoomFactors, firefoxZoomFactors};

@@ -2,6 +2,7 @@ import browser from 'webextension-polyfill';
 import closest from 'closest-to';
 import Queue from 'p-queue';
 
+import {initStorage} from 'storage/init';
 import storage from 'storage/storage';
 import {targetEnv} from 'utils/config';
 import {chromeZoomFactors, firefoxZoomFactors} from 'utils/data';
@@ -17,7 +18,7 @@ async function setContextMenuEvent() {
     if (mouseButton === 'secondary') {
       browser.browserSettings.contextMenuShowEvent.set({value: 'mouseup'});
     } else {
-      browser.browserSettings.contextMenuShowEvent.clear();
+      browser.browserSettings.contextMenuShowEvent.clear({});
     }
   }
 }
@@ -53,7 +54,7 @@ function addMessageListener() {
 }
 
 async function onLoad() {
-  await storage.init('sync');
+  await initStorage('sync');
   await setContextMenuEvent();
   addStorageListener();
   addMessageListener();
