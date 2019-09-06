@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/dessant/scroll-zoom/compare/v0.3.0...v0.4.0) (2019-09-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* Since browsers are removing support for the protocol,
+FTP pages can no longer be zoomed.
+
+### Bug Fixes
+
+* do not inject the content script in ftp pages ([e2d32a4](https://github.com/dessant/scroll-zoom/commit/e2d32a4))
+* do not scroll the page while zooming on Chrome ([fb3cd6c](https://github.com/dessant/scroll-zoom/commit/fb3cd6c))
+
 ## [0.3.0](https://github.com/dessant/scroll-zoom/compare/v0.2.0...v0.3.0) (2019-05-23)
 
 
