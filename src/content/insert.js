@@ -3,14 +3,16 @@ let mouseButton;
 function allowNextEvent(eventType) {
   window.removeEventListener(eventType, stopEvent, {
     capture: true,
-    once: true
+    once: true,
+    passive: false
   });
 }
 
 function stopNextEvent(eventType) {
   window.addEventListener(eventType, stopEvent, {
     capture: true,
-    once: true
+    once: true,
+    passive: false
   });
 }
 
@@ -52,7 +54,8 @@ function init() {
   });
 
   window.addEventListener('wheel', onWheel, {
-    capture: true
+    capture: true,
+    passive: false
   });
 }
 
