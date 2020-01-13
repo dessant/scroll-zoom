@@ -1,17 +1,18 @@
-<!-- prettier-ignore -->
 <template>
-<div id="app" v-if="dataLoaded">
-  <div class="section">
-    <div class="option-wrap">
-      <div class="option select">
-        <v-select :label="getText('optionTitle_zoomGesture')"
+  <div id="app" v-if="dataLoaded">
+    <div class="section">
+      <div class="option-wrap">
+        <div class="option select">
+          <v-select
+            :label="getText('optionTitle_zoomGesture')"
             v-model="options.mouseButton"
-            :options="selectOptions.mouseButton">
-        </v-select>
+            :options="selectOptions.mouseButton"
+          >
+          </v-select>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
