@@ -12,7 +12,11 @@ const queue = new Queue({concurrency: 1});
 const zoomFactors =
   targetEnv === 'firefox' ? firefoxZoomFactors : chromeZoomFactors;
 
-async function setContextMenuEvent() {
+let reverseDirection;
+
+async function syncState() {
+  ({reverseDirection} = await storage.get('reverseDirection', 'sync'));
+
   if (targetEnv === 'firefox') {
     const {mouseButton} = await storage.get('mouseButton', 'sync');
     if (mouseButton === 'secondary') {
@@ -24,7 +28,7 @@ async function setContextMenuEvent() {
 }
 
 async function onStorageChange(changes, area) {
-  await setContextMenuEvent();
+  await syncState();
 }
 
 function onMessage(request, sender, sendResponse) {
@@ -34,7 +38,10 @@ function onMessage(request, sender, sendResponse) {
 }
 
 async function zoomPage(tabId, zoomIn) {
-  let zoomFactor = closest(await browser.tabs.getZoom(), zoomFactors);
+  if (reverseDirection) {
+    zoomIn = !zoomIn;
+  }
+  let zoomFactor = closest(await browser.tabs.getZoom(tabId), zoomFactors);
   const newZoomFactor =
     zoomFactors[zoomFactors.indexOf(zoomFactor) + (zoomIn ? 1 : -1)];
 
@@ -55,7 +62,7 @@ function addMessageListener() {
 
 async function onLoad() {
   await initStorage('sync');
-  await setContextMenuEvent();
+  await syncState();
   addStorageListener();
   addMessageListener();
 }

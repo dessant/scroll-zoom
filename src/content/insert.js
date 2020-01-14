@@ -44,7 +44,7 @@ function onWheel(e) {
 
 function init() {
   chrome.storage.onChanged.addListener(function(changes, area) {
-    if (area === 'sync' && changes.mouseButton) {
+    if (changes.mouseButton) {
       mouseButton = changes.mouseButton.newValue;
     }
   });

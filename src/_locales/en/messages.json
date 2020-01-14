@@ -24,6 +24,11 @@
     "description": "Value of the option."
   },
 
+  "optionTitle_reverseDirection": {
+    "message": "Reverse zoom direction",
+    "description": "Title of the option."
+  },
+
   "pageTitle": {
     "message": "$PAGETITLE$ - $EXTENSIONNAME$",
     "description": "Title of the page.",

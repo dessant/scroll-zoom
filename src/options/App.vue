@@ -10,6 +10,14 @@
           >
           </v-select>
         </div>
+        <div class="option">
+          <v-form-field
+            input-id="rd"
+            :label="getText('optionTitle_reverseDirection')"
+          >
+            <v-switch id="rd" v-model="options.reverseDirection"></v-switch>
+          </v-form-field>
+        </div>
       </div>
     </div>
   </div>
@@ -17,7 +25,7 @@
 
 <script>
 import browser from 'webextension-polyfill';
-import {Select} from 'ext-components';
+import {FormField, Switch, Select} from 'ext-components';
 
 import storage from 'storage/storage';
 import {getOptionLabels} from 'utils/app';
@@ -26,7 +34,9 @@ import {optionKeys} from 'utils/data';
 
 export default {
   components: {
-    [Select.name]: Select
+    [Select.name]: Select,
+    [FormField.name]: FormField,
+    [Switch.name]: Switch
   },
 
   data: function() {
@@ -38,7 +48,8 @@ export default {
       }),
 
       options: {
-        mouseButton: ''
+        mouseButton: '',
+        reverseDirection: false
       }
     };
   },
@@ -79,6 +90,10 @@ body {
   font-size: 100%;
   background-color: #ffffff;
   overflow: visible !important;
+}
+
+.mdc-switch {
+  margin-right: 16px;
 }
 
 #app {
