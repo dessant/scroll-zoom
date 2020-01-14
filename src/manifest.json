@@ -19,8 +19,6 @@
   "permissions": [
     "browserSettings",
     "storage",
-    "tabs",
-    "activeTab",
     "<all_urls>"
   ],
 
