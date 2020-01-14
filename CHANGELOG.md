@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/dessant/scroll-zoom/compare/v1.0.0...v1.0.1) (2020-01-14)
+
+
+### Bug Fixes
+
+* remove unnecessary permissions ([7ef6dda](https://github.com/dessant/scroll-zoom/commit/7ef6dda6c0c949c3b707232c4141461037cca438))
+
 ## [1.0.0](https://github.com/dessant/scroll-zoom/compare/v0.4.0...v1.0.0) (2020-01-14)
 
 
