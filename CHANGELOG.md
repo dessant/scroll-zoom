@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/dessant/scroll-zoom/compare/v0.4.0...v1.0.0) (2020-01-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* browser versions before Chrome 76, Firefox 68 and Opera 63
+are no longer supported
+
+### Features
+
+* add option for reversing zoom direction ([69eff18](https://github.com/dessant/scroll-zoom/commit/69eff185a91048a2fbdc88d2db3adf25d744c30f)), closes [#4](https://github.com/dessant/scroll-zoom/issues/4)
+
+
+### Bug Fixes
+
+* adjust options page layout ([2093a2d](https://github.com/dessant/scroll-zoom/commit/2093a2d49fb14965dd84eb2e3b8590736fe99f30))
+* remove support for outdated browsers ([ba6269c](https://github.com/dessant/scroll-zoom/commit/ba6269c077858a512a9489e0cb1d49ef6c5de118))
+
 ## [0.4.0](https://github.com/dessant/scroll-zoom/compare/v0.3.0...v0.4.0) (2019-09-06)
 
 
