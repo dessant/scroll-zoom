@@ -21,8 +21,6 @@
     "build:prod:zip:opera": "cross-env TARGET_ENV=opera yarn _build:prod:zip",
     "build:prod:zip:all": "run-s 'build:prod:zip:@(chrome|firefox|opera)'",
     "start": "web-ext run -s dist/firefox",
-    "exec": "run-s build:firefox start",
-    "exec:prod": "run-s build:prod:firefox start",
     "inspect": "cross-env NODE_ENV=production gulp inspect",
     "update": "ncu --upgrade && yarn",
     "push": "git push --follow-tags origin master",
