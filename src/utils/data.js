@@ -1,4 +1,4 @@
-const optionKeys = ['mouseButton'];
+const optionKeys = ['zoomGesture', 'reverseZoomDirection', 'resetZoomGesture'];
 
 const chromeZoomFactors = [
   0.25,

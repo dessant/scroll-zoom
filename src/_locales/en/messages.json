@@ -14,19 +14,44 @@
     "description": "Title of the option."
   },
 
-  "optionValue_mouseButton_primary": {
+  "optionValue_zoomGesture_primary_wheel": {
     "message": "Primary mouse button and scroll wheel",
     "description": "Value of the option."
   },
 
-  "optionValue_mouseButton_secondary": {
+  "optionValue_zoomGesture_secondary_wheel": {
     "message": "Secondary mouse button and scroll wheel",
     "description": "Value of the option."
   },
 
-  "optionTitle_reverseDirection": {
+  "optionTitle_reverseZoomDirection": {
     "message": "Reverse zoom direction",
     "description": "Title of the option."
+  },
+
+  "optionTitle_resetZoomGesture": {
+    "message": "Reset zoom level gesture",
+    "description": "Title of the option."
+  },
+
+  "optionValue_resetZoomGesture_primary_secondary": {
+    "message": "Primary and secondary mouse button",
+    "description": "Value of the option."
+  },
+
+  "optionValue_resetZoomGesture_secondary_primary": {
+    "message": "Secondary and primary mouse button",
+    "description": "Value of the option."
+  },
+
+  "optionValue_resetZoomGesture_primary_auxiliary": {
+    "message": "Primary and auxiliary mouse button",
+    "description": "Value of the option."
+  },
+
+  "optionValue_resetZoomGesture_secondary_auxiliary": {
+    "message": "Secondary and auxiliary mouse button",
+    "description": "Value of the option."
   },
 
   "pageTitle": {

@@ -1,59 +1,134 @@
-let mouseButton;
+let zoomGesture;
+let resetZoomGesture;
 
-function allowNextEvent(eventType) {
-  window.removeEventListener(eventType, stopEvent, {
-    capture: true,
-    once: true,
-    passive: false
+// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+const buttonCodes = {
+  primary: 0,
+  secondary: 2,
+  auxiliary: 1
+};
+
+// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+const buttonCombinationCodes = {
+  primary: 1,
+  secondary: 2,
+  auxiliary: 4
+};
+
+function createMouseGesture(gesture) {
+  const gestureSteps = gesture.split('_');
+
+  const data = {
+    code: {steps: [], combination: 0},
+    text: {steps: gestureSteps, combination: gesture}
+  };
+
+  gestureSteps.forEach(item => {
+    data.code.steps.push(buttonCodes[item]);
+    if (item !== 'wheel') {
+      data.code.combination += buttonCombinationCodes[item];
+    }
   });
+
+  return data;
 }
 
-function stopNextEvent(eventType) {
-  window.addEventListener(eventType, stopEvent, {
-    capture: true,
-    once: true,
-    passive: false
-  });
+function stopEvent(ev) {
+  ev.preventDefault();
+  ev.stopImmediatePropagation();
 }
 
-function stopEvent(e) {
-  e.preventDefault();
-  e.stopImmediatePropagation();
+function stopEventType(
+  eventType,
+  {timeout = 3000, anchorX = null, anchorY = null} = {}
+) {
+  const callback = function(ev) {
+    if (anchorX !== null && anchorY !== null) {
+      if (
+        Math.abs(ev.clientX * window.devicePixelRatio - anchorX) <= 36 &&
+        Math.abs(ev.clientY * window.devicePixelRatio - anchorY) <= 36
+      ) {
+        stopEvent(ev);
+      }
+    } else {
+      stopEvent(ev);
+    }
+  };
 
-  if (e.type === 'contextmenu') {
-    // Firefox simultaneously fires a click event, but not always.
-    allowNextEvent('click');
+  window.addEventListener(eventType, callback, {
+    capture: true,
+    passive: false
+  });
+
+  if (timeout) {
+    window.setTimeout(function() {
+      window.removeEventListener(eventType, callback, {
+        capture: true,
+        passive: false
+      });
+    }, timeout);
   }
 }
 
-function onWheel(e) {
-  if (e.deltaY && (e.buttons === 1 || e.buttons === 2)) {
-    const button = e.buttons === 1 ? 'primary' : 'secondary';
+function stopRelatedEvents(gesture, gestureEvent) {
+  const anchorX = gestureEvent.clientX * window.devicePixelRatio;
+  const anchorY = gestureEvent.clientY * window.devicePixelRatio;
 
-    if (button === mouseButton) {
-      stopEvent(e);
-      stopNextEvent('click');
-      if (button === 'secondary') {
-        stopNextEvent('contextmenu');
-      }
+  stopEventType('mouseup', {anchorX, anchorY});
+  if (gesture.text.steps.includes('primary')) {
+    stopEventType('click', {anchorX, anchorY});
+  }
+  if (gesture.text.steps.includes('secondary')) {
+    stopEventType('contextmenu', {anchorX, anchorY});
+  }
+  if (gesture.text.steps.includes('auxiliary')) {
+    stopEventType('auxclick', {anchorX, anchorY});
+  }
+}
 
-      chrome.runtime.sendMessage({id: 'zoomPage', zoomIn: e.deltaY < 0});
-    }
+function onWheel(ev) {
+  if (ev.deltaY && ev.buttons === zoomGesture.code.combination) {
+    stopEvent(ev);
+    stopRelatedEvents(zoomGesture, ev);
+
+    chrome.runtime.sendMessage({id: 'zoomPage', zoomIn: ev.deltaY < 0});
+  }
+}
+
+function onMousedown(ev) {
+  if (
+    ev.buttons === resetZoomGesture.code.combination &&
+    ev.button === resetZoomGesture.code.steps[1]
+  ) {
+    stopEvent(ev);
+    stopRelatedEvents(resetZoomGesture, ev);
+
+    chrome.runtime.sendMessage({id: 'resetZoomLevel'});
   }
 }
 
 function init() {
   chrome.storage.onChanged.addListener(function(changes, area) {
-    if (changes.mouseButton) {
-      mouseButton = changes.mouseButton.newValue;
+    if (changes.zoomGesture) {
+      zoomGesture = createMouseGesture(changes.zoomGesture.newValue);
+    } else if (changes.resetZoomGesture) {
+      resetZoomGesture = createMouseGesture(changes.resetZoomGesture.newValue);
     }
   });
 
-  chrome.storage.sync.get(['mouseButton'], function(result) {
-    mouseButton = result.mouseButton;
+  chrome.storage.sync.get(['zoomGesture', 'resetZoomGesture'], function(
+    result
+  ) {
+    zoomGesture = createMouseGesture(result.zoomGesture);
+    resetZoomGesture = createMouseGesture(result.resetZoomGesture);
   });
 
   window.addEventListener('wheel', onWheel, {
+    capture: true,
+    passive: false
+  });
+
+  window.addEventListener('mousedown', onMousedown, {
     capture: true,
     passive: false
   });

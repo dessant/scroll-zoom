@@ -5,18 +5,29 @@
         <div class="option select">
           <v-select
             :label="getText('optionTitle_zoomGesture')"
-            v-model="options.mouseButton"
-            :options="selectOptions.mouseButton"
+            v-model="options.zoomGesture"
+            :options="selectOptions.zoomGesture"
           >
           </v-select>
         </div>
         <div class="option">
           <v-form-field
-            input-id="rd"
-            :label="getText('optionTitle_reverseDirection')"
+            input-id="rzd"
+            :label="getText('optionTitle_reverseZoomDirection')"
           >
-            <v-switch id="rd" v-model="options.reverseDirection"></v-switch>
+            <v-switch
+              id="rzd"
+              v-model="options.reverseZoomDirection"
+            ></v-switch>
           </v-form-field>
+        </div>
+        <div class="option select">
+          <v-select
+            :label="getText('optionTitle_resetZoomGesture')"
+            v-model="options.resetZoomGesture"
+            :options="selectOptions.resetZoomGesture"
+          >
+          </v-select>
         </div>
       </div>
     </div>
@@ -44,12 +55,19 @@ export default {
       dataLoaded: false,
 
       selectOptions: getOptionLabels({
-        mouseButton: ['primary', 'secondary']
+        zoomGesture: ['primary_wheel', 'secondary_wheel'],
+        resetZoomGesture: [
+          'primary_secondary',
+          'secondary_primary',
+          'primary_auxiliary',
+          'secondary_auxiliary'
+        ]
       }),
 
       options: {
-        mouseButton: '',
-        reverseDirection: false
+        zoomGesture: '',
+        reverseZoomDirection: false,
+        resetZoomGesture: ''
       }
     };
   },

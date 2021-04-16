@@ -12,14 +12,20 @@ const queue = new Queue({concurrency: 1});
 const zoomFactors =
   targetEnv === 'firefox' ? firefoxZoomFactors : chromeZoomFactors;
 
-let reverseDirection;
+let reverseZoomDirection;
 
 async function syncState() {
-  ({reverseDirection} = await storage.get('reverseDirection', 'sync'));
+  ({reverseZoomDirection} = await storage.get('reverseZoomDirection', 'sync'));
 
   if (targetEnv === 'firefox') {
-    const {mouseButton} = await storage.get('mouseButton', 'sync');
-    if (mouseButton === 'secondary') {
+    const {zoomGesture, resetZoomGesture} = await storage.get(
+      ['zoomGesture', 'resetZoomGesture'],
+      'sync'
+    );
+    if (
+      zoomGesture.includes('secondary') ||
+      resetZoomGesture.includes('secondary')
+    ) {
       browser.browserSettings.contextMenuShowEvent.set({value: 'mouseup'});
     } else {
       browser.browserSettings.contextMenuShowEvent.clear({});
@@ -34,11 +40,13 @@ async function onStorageChange(changes, area) {
 function onMessage(request, sender, sendResponse) {
   if (request.id === 'zoomPage') {
     queue.add(() => zoomPage(sender.tab.id, request.zoomIn));
+  } else if (request.id === 'resetZoomLevel') {
+    queue.add(() => resetZoomLevel(sender.tab.id));
   }
 }
 
 async function zoomPage(tabId, zoomIn) {
-  if (reverseDirection) {
+  if (reverseZoomDirection) {
     zoomIn = !zoomIn;
   }
   let zoomFactor = closest(await browser.tabs.getZoom(tabId), zoomFactors);
@@ -50,6 +58,10 @@ async function zoomPage(tabId, zoomIn) {
   }
 
   await browser.tabs.setZoom(tabId, zoomFactor);
+}
+
+async function resetZoomLevel(tabId) {
+  await browser.tabs.setZoom(tabId, 0);
 }
 
 function addStorageListener() {
