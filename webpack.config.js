@@ -31,12 +31,10 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist', targetEnv, 'src'),
+    filename: '[name]/script.js',
     chunkFilename: '[name]/script.js'
   },
   optimization: {
-    runtimeChunk: {
-      name: 'manifest'
-    },
     splitChunks: {
       cacheGroups: {
         default: false
@@ -69,7 +67,9 @@ module.exports = {
           {
             loader: 'sass-loader',
             options: {
-              includePaths: ['node_modules']
+              sassOptions: {
+                includePaths: ['node_modules']
+              }
             }
           }
         ]
