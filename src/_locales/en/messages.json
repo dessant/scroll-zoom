@@ -54,6 +54,11 @@
     "description": "Value of the option."
   },
 
+  "inputLabel_zoomFactors": {
+    "message": "Zoom factors",
+    "description": "Label of the input."
+  },
+
   "pageTitle": {
     "message": "$PAGETITLE$ - $EXTENSIONNAME$",
     "description": "Title of the page.",

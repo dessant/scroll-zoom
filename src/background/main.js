@@ -5,17 +5,17 @@ import Queue from 'p-queue';
 import {initStorage} from 'storage/init';
 import storage from 'storage/storage';
 import {targetEnv} from 'utils/config';
-import {chromeZoomFactors, firefoxZoomFactors} from 'utils/data';
 
 const queue = new Queue({concurrency: 1});
 
-const zoomFactors =
-  targetEnv === 'firefox' ? firefoxZoomFactors : chromeZoomFactors;
-
 let reverseZoomDirection;
+let zoomFactors;
 
 async function syncState() {
-  ({reverseZoomDirection} = await storage.get('reverseZoomDirection', 'sync'));
+  ({reverseZoomDirection, zoomFactors} = await storage.get(
+    ['reverseZoomDirection', 'zoomFactors'],
+    'sync'
+  ));
 
   if (targetEnv === 'firefox') {
     const {zoomGesture, resetZoomGesture} = await storage.get(

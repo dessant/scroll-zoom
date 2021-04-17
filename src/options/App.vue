@@ -29,25 +29,34 @@
           >
           </v-select>
         </div>
+        <div class="option text-field">
+          <v-textfield
+            :value="staticZoomFactors"
+            :label="getText('inputLabel_zoomFactors')"
+            @input="saveZoomFactors($event.trim())"
+          >
+          </v-textfield>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import browser from 'webextension-polyfill';
-import {FormField, Switch, Select} from 'ext-components';
+import {FormField, Switch, Select, TextField} from 'ext-components';
 
 import storage from 'storage/storage';
 import {getOptionLabels} from 'utils/app';
 import {getText} from 'utils/common';
+import {targetEnv} from 'utils/config';
 import {optionKeys} from 'utils/data';
 
 export default {
   components: {
     [Select.name]: Select,
     [FormField.name]: FormField,
-    [Switch.name]: Switch
+    [Switch.name]: Switch,
+    [TextField.name]: TextField
   },
 
   data: function() {
@@ -64,16 +73,39 @@ export default {
         ]
       }),
 
+      staticZoomFactors: '',
+
       options: {
         zoomGesture: '',
         reverseZoomDirection: false,
-        resetZoomGesture: ''
+        resetZoomGesture: '',
+        zoomFactors: []
       }
     };
   },
 
   methods: {
-    getText
+    getText,
+
+    saveZoomFactors: function(value) {
+      const minValue = targetEnv === 'firefox' ? 0.3 : 0.25;
+      const maxValue = 5;
+
+      const zoomFactors = value.split(',').map(item => {
+        let zoomFactor = parseFloat(item);
+        if (zoomFactor < minValue || zoomFactor > maxValue) {
+          zoomFactor = NaN;
+        }
+
+        return zoomFactor;
+      });
+
+      this.options.zoomFactors = zoomFactors;
+    },
+
+    loadZoomFactors: function() {
+      this.staticZoomFactors = this.options.zoomFactors.join(',');
+    }
   },
 
   created: async function() {
@@ -90,6 +122,8 @@ export default {
       getText('pageTitle_options'),
       getText('extensionName')
     ]);
+
+    this.loadZoomFactors();
 
     this.dataLoaded = true;
   }
@@ -123,6 +157,7 @@ body {
 .option-wrap {
   display: grid;
   grid-row-gap: 24px;
+  padding-top: 24px;
   grid-auto-columns: min-content;
 }
 
@@ -142,9 +177,15 @@ body {
   }
 }
 
+.option {
+  &.select,
+  &.text-field {
+    height: 56px;
+  }
+}
+
 .option.select {
   align-items: start;
-  height: 56px;
 
   & .mdc-select__anchor,
   & .mdc-select__menu {
