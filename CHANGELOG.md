@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/dessant/scroll-zoom/compare/v1.0.1...v1.1.0) (2021-04-17)
+
+
+### Features
+
+* add gestures for resetting zoom level ([d1f7778](https://github.com/dessant/scroll-zoom/commit/d1f7778698328576c1b32ff46418bf09951bd6df))
+* add option for customizing zoom factors ([3291918](https://github.com/dessant/scroll-zoom/commit/32919189bed8d7ca5220793057f8ca5879aa95c0)), closes [#6](https://github.com/dessant/scroll-zoom/issues/6)
+
 ### [1.0.1](https://github.com/dessant/scroll-zoom/compare/v1.0.0...v1.0.1) (2020-01-14)
 
 
