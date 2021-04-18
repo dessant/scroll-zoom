@@ -42,7 +42,7 @@ function stopEventType(
   eventType,
   {timeout = 3000, anchorX = null, anchorY = null} = {}
 ) {
-  const callback = function(ev) {
+  const callback = function (ev) {
     if (anchorX !== null && anchorY !== null) {
       if (
         Math.abs(ev.clientX * window.devicePixelRatio - anchorX) <= 36 &&
@@ -61,7 +61,7 @@ function stopEventType(
   });
 
   if (timeout) {
-    window.setTimeout(function() {
+    window.setTimeout(function () {
       window.removeEventListener(eventType, callback, {
         capture: true,
         passive: false
@@ -74,8 +74,13 @@ function stopRelatedEvents(gesture, gestureEvent) {
   const anchorX = gestureEvent.clientX * window.devicePixelRatio;
   const anchorY = gestureEvent.clientY * window.devicePixelRatio;
 
+  stopEventType('mousemove', {anchorX, anchorY});
   stopEventType('mouseup', {anchorX, anchorY});
+
   if (gesture.text.steps.includes('primary')) {
+    stopEventType('selectstart', {timeout: 1000});
+    stopEventType('dragstart', {anchorX, anchorY, timeout: 1000});
+
     stopEventType('click', {anchorX, anchorY});
   }
   if (gesture.text.steps.includes('secondary')) {
@@ -108,7 +113,7 @@ function onMousedown(ev) {
 }
 
 function init() {
-  chrome.storage.onChanged.addListener(function(changes, area) {
+  chrome.storage.onChanged.addListener(function (changes, area) {
     if (changes.zoomGesture) {
       zoomGesture = createMouseGesture(changes.zoomGesture.newValue);
     } else if (changes.resetZoomGesture) {
@@ -116,12 +121,13 @@ function init() {
     }
   });
 
-  chrome.storage.sync.get(['zoomGesture', 'resetZoomGesture'], function(
-    result
-  ) {
-    zoomGesture = createMouseGesture(result.zoomGesture);
-    resetZoomGesture = createMouseGesture(result.resetZoomGesture);
-  });
+  chrome.storage.sync.get(
+    ['zoomGesture', 'resetZoomGesture'],
+    function (result) {
+      zoomGesture = createMouseGesture(result.zoomGesture);
+      resetZoomGesture = createMouseGesture(result.resetZoomGesture);
+    }
+  );
 
   window.addEventListener('wheel', onWheel, {
     capture: true,
