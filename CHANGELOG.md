@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/dessant/scroll-zoom/compare/v1.1.0...v1.1.1) (2021-04-18)
+
+
+### Bug Fixes
+
+* ignore select and drag events during gesture ([a8013da](https://github.com/dessant/scroll-zoom/commit/a8013da5f11a6cb9911867c1867a1e9095965c60)), closes [#7](https://github.com/dessant/scroll-zoom/issues/7)
+* restore default zoom levels when option value is cleared ([3917393](https://github.com/dessant/scroll-zoom/commit/3917393bf9b511eea3771d68b26e323443463fb6))
+
 ## [1.1.0](https://github.com/dessant/scroll-zoom/compare/v1.0.1...v1.1.0) (2021-04-17)
 
 
