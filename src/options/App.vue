@@ -49,7 +49,7 @@ import storage from 'storage/storage';
 import {getOptionLabels} from 'utils/app';
 import {getText} from 'utils/common';
 import {targetEnv} from 'utils/config';
-import {optionKeys} from 'utils/data';
+import {optionKeys, chromeZoomFactors, firefoxZoomFactors} from 'utils/data';
 
 export default {
   components: {
@@ -59,7 +59,7 @@ export default {
     [TextField.name]: TextField
   },
 
-  data: function() {
+  data: function () {
     return {
       dataLoaded: false,
 
@@ -87,33 +87,42 @@ export default {
   methods: {
     getText,
 
-    saveZoomFactors: function(value) {
+    saveZoomFactors: function (value) {
       const minValue = targetEnv === 'firefox' ? 0.3 : 0.25;
       const maxValue = 5;
 
-      const zoomFactors = value.split(',').map(item => {
-        let zoomFactor = parseFloat(item);
-        if (zoomFactor < minValue || zoomFactor > maxValue) {
-          zoomFactor = NaN;
-        }
+      const zoomFactors = value
+        .split(',')
+        .map(item => {
+          let zoomFactor = parseFloat(item);
+          if (zoomFactor < minValue || zoomFactor > maxValue) {
+            zoomFactor = NaN;
+          }
 
-        return zoomFactor;
-      });
+          return zoomFactor;
+        })
+        .filter(Boolean);
+
+      if (!zoomFactors.length) {
+        zoomFactors.push(
+          ...(targetEnv === 'firefox' ? firefoxZoomFactors : chromeZoomFactors)
+        );
+      }
 
       this.options.zoomFactors = zoomFactors;
     },
 
-    loadZoomFactors: function() {
-      this.staticZoomFactors = this.options.zoomFactors.join(',');
+    loadZoomFactors: function () {
+      this.staticZoomFactors = this.options.zoomFactors.join(', ');
     }
   },
 
-  created: async function() {
+  created: async function () {
     const options = await storage.get(optionKeys, 'sync');
 
     for (const option of Object.keys(this.options)) {
       this.options[option] = options[option];
-      this.$watch(`options.${option}`, async function(value) {
+      this.$watch(`options.${option}`, async function (value) {
         await storage.set({[option]: value}, 'sync');
       });
     }
