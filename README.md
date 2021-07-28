@@ -1,14 +1,14 @@
-<p align="center"><img src="https://i.imgur.com/ZKMN7Fn.png"></p>
+<p align="center"><img width="128" height="128" src="https://i.imgur.com/MoYxtMl.png"></p>
 <h1 align="center">Scroll Zoom</h1>
 
 <p align="center">
   </br></br>
   <a href="https://chrome.google.com/webstore/detail/ccfomhdaagemnbhbpminjoggkbglmcgb">
-    <img src="https://i.imgur.com/B0i5sn3.png" alt="Chrome Web Store"></a>
+    <img height="58" src="https://i.imgur.com/K9Yh8G9.png" alt="Chrome Web Store"></a>
   <a href="https://addons.mozilla.org/en-US/firefox/addon/scroll-zoom/">
-    <img src="https://i.imgur.com/kMH6r1a.png" alt="Firefox add-ons"></a>
+    <img height="58" src="https://i.imgur.com/2jJOtTI.png" alt="Firefox add-ons"></a>
   <a href="https://microsoftedge.microsoft.com/addons/detail/pafomddlmihbmamkddcolihjafncmigm">
-    <img src="https://i.imgur.com/n49Wiu2.png" alt="Microsoft Store"></a>
+    <img height="58" src="https://i.imgur.com/es2YFRA.png" alt="Microsoft Store"></a>
   </br></br>
 </p>
 
