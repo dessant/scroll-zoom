@@ -4,7 +4,8 @@ const optionKeys = [
   'resetZoomGesture',
   'zoomFactors',
   'appTheme',
-  'showContribPage'
+  'showContribPage',
+  'ignoreZoomGestureSelection'
 ];
 
 // prettier-ignore

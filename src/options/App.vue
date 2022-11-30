@@ -29,6 +29,28 @@
         {{ getText('optionSectionTitle_misc') }}
       </div>
       <div class="option-wrap">
+        <div class="option select">
+          <vn-select
+            :label="getText('optionTitle_appTheme')"
+            :items="listItems.appTheme"
+            v-model="options.appTheme"
+          >
+          </vn-select>
+        </div>
+        <div class="option text-field">
+          <vn-text-field
+            :label="getText('optionTitle_zoomFactors')"
+            v-model="staticZoomFactors"
+            @update:modelValue="saveZoomFactors($event.trim())"
+          >
+          </vn-text-field>
+        </div>
+        <div class="option">
+          <vn-switch
+            :label="getText('optionTitle_ignoreZoomGestureSelection')"
+            v-model="options.ignoreZoomGestureSelection"
+          ></vn-switch>
+        </div>
         <div class="option">
           <vn-switch
             :label="getText('optionTitle_reverseZoomDirection')"
@@ -40,22 +62,6 @@
             :label="getText('optionTitle_showContribPage')"
             v-model="options.showContribPage"
           ></vn-switch>
-        </div>
-        <div class="option text-field">
-          <vn-text-field
-            :label="getText('optionTitle_zoomFactors')"
-            v-model="staticZoomFactors"
-            @update:modelValue="saveZoomFactors($event.trim())"
-          >
-          </vn-text-field>
-        </div>
-        <div class="option select">
-          <vn-select
-            :label="getText('optionTitle_appTheme')"
-            :items="listItems.appTheme"
-            v-model="options.appTheme"
-          >
-          </vn-select>
         </div>
         <div class="option button" v-if="enableContributions">
           <vn-button
@@ -124,7 +130,8 @@ export default {
         resetZoomGesture: '',
         zoomFactors: [],
         appTheme: '',
-        showContribPage: false
+        showContribPage: false,
+        ignoreZoomGestureSelection: false
       }
     };
   },
@@ -237,7 +244,7 @@ export default {
   }
 
   &.text-field .v-input__control {
-    width: 312px;
+    width: 342px;
   }
 
   & .contribute-button {

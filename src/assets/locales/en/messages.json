@@ -74,6 +74,11 @@
     "description": "Value of the option."
   },
 
+  "optionTitle_ignoreZoomGestureSelection": {
+    "message": "Ignore zoom gesture during text selection",
+    "description": "Title of the option."
+  },
+
   "optionTitle_showContribPage": {
     "message": "Show contribution page",
     "description": "Title of the option."

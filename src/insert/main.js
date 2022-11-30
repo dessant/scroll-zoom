@@ -10,6 +10,7 @@ function main() {
 
   let zoomGesture;
   let resetZoomGesture;
+  let ignoreZoomGestureSelection;
 
   // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
   const buttonCodes = {
@@ -100,7 +101,11 @@ function main() {
   }
 
   function onWheel(ev) {
-    if (ev.deltaY && ev.buttons === zoomGesture.code.combination) {
+    if (
+      ev.deltaY &&
+      ev.buttons === zoomGesture.code.combination &&
+      !ignoreZoomGesture()
+    ) {
       stopEvent(ev);
       stopRelatedEvents(zoomGesture, ev);
 
@@ -120,11 +125,40 @@ function main() {
     }
   }
 
-  async function configGestures() {
-    const options = await storage.get(['zoomGesture', 'resetZoomGesture']);
+  function isSelection() {
+    try {
+      return (
+        !window.getSelection().isCollapsed ||
+        document.activeElement?.selectionStart !==
+          document.activeElement?.selectionEnd
+      );
+    } catch (ex) {}
+
+    return false;
+  }
+
+  function ignoreZoomGesture() {
+    if (
+      zoomGesture.text.steps.includes('primary') &&
+      ignoreZoomGestureSelection &&
+      isSelection()
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async function syncState() {
+    const options = await storage.get([
+      'zoomGesture',
+      'resetZoomGesture',
+      'ignoreZoomGestureSelection'
+    ]);
 
     zoomGesture = createMouseGesture(options.zoomGesture);
     resetZoomGesture = createMouseGesture(options.resetZoomGesture);
+    ignoreZoomGestureSelection = options.ignoreZoomGestureSelection;
   }
 
   function processEvent(ev) {
@@ -165,14 +199,16 @@ function main() {
   }
 
   async function setup() {
-    await configGestures();
+    await syncState();
 
     browser.storage.onChanged.addListener(function (changes, area) {
       if (
         area === 'local' &&
-        (changes.zoomGesture || changes.resetZoomGesture)
+        (changes.zoomGesture ||
+          changes.resetZoomGesture ||
+          changes.ignoreZoomGestureSelection)
       ) {
-        configGestures();
+        syncState();
       }
     });
   }

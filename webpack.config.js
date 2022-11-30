@@ -40,7 +40,7 @@ const plugins = [
   isProduction ? new LodashModuleReplacementPlugin({shorthands: true}) : null
 ].filter(Boolean);
 
-const entries = [];
+const entries = {};
 
 if (enableContributions) {
   entries.contribute = './src/contribute/main.js';
