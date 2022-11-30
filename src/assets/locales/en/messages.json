@@ -10,7 +10,7 @@
   },
 
   "optionTitle_zoomGesture": {
-    "message": "Zoom gesture",
+    "message": "Zoom",
     "description": "Title of the option."
   },
 
@@ -30,7 +30,7 @@
   },
 
   "optionTitle_resetZoomGesture": {
-    "message": "Reset zoom level gesture",
+    "message": "Reset zoom level",
     "description": "Title of the option."
   },
 
@@ -54,9 +54,39 @@
     "description": "Value of the option."
   },
 
-  "inputLabel_zoomFactors": {
+  "optionTitle_appTheme": {
+    "message": "Theme",
+    "description": "Title of the option."
+  },
+
+  "optionValue_appTheme_auto": {
+    "message": "System default",
+    "description": "Value of the option."
+  },
+
+  "optionValue_appTheme_light": {
+    "message": "Light",
+    "description": "Value of the option."
+  },
+
+  "optionValue_appTheme_dark": {
+    "message": "Dark",
+    "description": "Value of the option."
+  },
+
+  "optionTitle_showContribPage": {
+    "message": "Show contribution page",
+    "description": "Title of the option."
+  },
+
+  "optionTitle_zoomFactors": {
     "message": "Zoom factors",
-    "description": "Label of the input."
+    "description": "Title of the option."
+  },
+
+  "buttonLabel_contribute": {
+    "message": "Contribute",
+    "description": "Label of the button."
   },
 
   "pageTitle": {
@@ -76,6 +106,21 @@
 
   "pageTitle_options": {
     "message": "Options",
+    "description": "Title of the page."
+  },
+
+  "optionSectionTitle_gestures": {
+    "message": "Gestures",
+    "description": "Title of the options section."
+  },
+
+  "optionSectionTitle_misc": {
+    "message": "Miscellaneous",
+    "description": "Title of the options section."
+  },
+
+  "pageTitle_contribute": {
+    "message": "Contribute",
     "description": "Title of the page."
   }
 }

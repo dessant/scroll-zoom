@@ -1,4 +1,4 @@
-<p align="center"><img width="128" height="128" src="https://i.imgur.com/MoYxtMl.png"></p>
+<p align="center"><img width="128" height="128" src="https://i.imgur.com/W61y3SQ.png"></p>
 <h1 align="center">Scroll Zoom</h1>
 
 <p align="center">
@@ -34,7 +34,7 @@ with the left or right mouse button and the scroll wheel.
 
 ## License
 
-Copyright (c) 2017-2021 Armin Sebastian
+Copyright (c) 2017-2022 Armin Sebastian
 
 This software is released under the terms of the GNU General Public License v3.0.
 See the [LICENSE](LICENSE) file for further information.

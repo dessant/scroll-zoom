@@ -2,32 +2,57 @@ const path = require('path');
 
 const webpack = require('webpack');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const {VueLoaderPlugin} = require('vue-loader');
+const {VuetifyPlugin} = require('webpack-plugin-vuetify');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const targetEnv = process.env.TARGET_ENV || 'firefox';
-const isProduction = process.env.NODE_ENV === 'production';
+const storageRevisions = require('./src/storage/config.json').revisions;
 
-let plugins = [
+const targetEnv = process.env.TARGET_ENV || 'chrome';
+const isProduction = process.env.NODE_ENV === 'production';
+const enableContributions =
+  (process.env.ENABLE_CONTRIBUTIONS || 'true') === 'true';
+
+const provideExtApi = !['firefox'].includes(targetEnv);
+
+const provideModules = {};
+if (provideExtApi) {
+  provideModules.browser = 'webextension-polyfill';
+}
+
+const plugins = [
   new webpack.DefinePlugin({
     'process.env': {
-      TARGET_ENV: JSON.stringify(targetEnv)
+      TARGET_ENV: JSON.stringify(targetEnv),
+      STORAGE_REVISION_LOCAL: JSON.stringify(storageRevisions.local.at(-1)),
+      ENABLE_CONTRIBUTIONS: JSON.stringify(enableContributions.toString())
     },
-    global: {}
+    __VUE_OPTIONS_API__: true,
+    __VUE_PROD_DEVTOOLS__: false
   }),
+  new webpack.ProvidePlugin(provideModules),
   new VueLoaderPlugin(),
+  new VuetifyPlugin(),
   new MiniCssExtractPlugin({
-    filename: '[name]/style.css'
+    filename: '[name]/style.css',
+    ignoreOrder: true
   }),
   isProduction ? new LodashModuleReplacementPlugin({shorthands: true}) : null
-];
-plugins = plugins.filter(Boolean);
+].filter(Boolean);
+
+const entries = [];
+
+if (enableContributions) {
+  entries.contribute = './src/contribute/main.js';
+}
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',
   entry: {
     background: './src/background/main.js',
-    options: './src/options/main.js'
+    options: './src/options/main.js',
+    insert: './src/insert/main.js',
+    ...entries
   },
   output: {
     path: path.resolve(__dirname, 'dist', targetEnv, 'src'),
@@ -37,7 +62,14 @@ module.exports = {
   optimization: {
     splitChunks: {
       cacheGroups: {
-        default: false
+        default: false,
+        commonsUi: {
+          name: 'commons-ui',
+          chunks: chunk => {
+            return ['options', 'contribute'].includes(chunk.name);
+          },
+          minChunks: 2
+        }
       }
     }
   },
@@ -45,7 +77,10 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: 'babel-loader'
+        use: 'babel-loader',
+        resolve: {
+          fullySpecified: false
+        }
       },
       {
         test: /\.vue$/,
@@ -53,7 +88,8 @@ module.exports = {
           {
             loader: 'vue-loader',
             options: {
-              transformAssetUrls: {img: ''}
+              transformAssetUrls: {img: ''},
+              compilerOptions: {whitespace: 'preserve'}
             }
           }
         ]
@@ -68,7 +104,8 @@ module.exports = {
             loader: 'sass-loader',
             options: {
               sassOptions: {
-                includePaths: ['node_modules']
+                includePaths: ['node_modules'],
+                quietDeps: true
               }
             }
           }
@@ -78,7 +115,8 @@ module.exports = {
   },
   resolve: {
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-    extensions: ['.js', '.json', '.css', '.scss', '.vue']
+    extensions: ['.js', '.json', '.css', '.scss', '.vue'],
+    fallback: {fs: false}
   },
   devtool: false,
   plugins

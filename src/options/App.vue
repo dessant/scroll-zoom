@@ -1,60 +1,90 @@
 <template>
-  <div id="app" v-if="dataLoaded">
+  <v-app id="app" v-if="dataLoaded">
     <div class="section">
+      <div class="section-title" v-once>
+        {{ getText('optionSectionTitle_gestures') }}
+      </div>
       <div class="option-wrap">
         <div class="option select">
-          <v-select
+          <vn-select
             :label="getText('optionTitle_zoomGesture')"
+            :items="listItems.zoomGesture"
             v-model="options.zoomGesture"
-            :options="selectOptions.zoomGesture"
           >
-          </v-select>
-        </div>
-        <div class="option">
-          <v-form-field
-            input-id="rzd"
-            :label="getText('optionTitle_reverseZoomDirection')"
-          >
-            <v-switch
-              id="rzd"
-              v-model="options.reverseZoomDirection"
-            ></v-switch>
-          </v-form-field>
+          </vn-select>
         </div>
         <div class="option select">
-          <v-select
+          <vn-select
             :label="getText('optionTitle_resetZoomGesture')"
+            :items="listItems.resetZoomGesture"
             v-model="options.resetZoomGesture"
-            :options="selectOptions.resetZoomGesture"
           >
-          </v-select>
-        </div>
-        <div class="option text-field">
-          <v-textfield
-            :value="staticZoomFactors"
-            :label="getText('inputLabel_zoomFactors')"
-            @input="saveZoomFactors($event.trim())"
-          >
-          </v-textfield>
+          </vn-select>
         </div>
       </div>
     </div>
-  </div>
+
+    <div class="section">
+      <div class="section-title" v-once>
+        {{ getText('optionSectionTitle_misc') }}
+      </div>
+      <div class="option-wrap">
+        <div class="option">
+          <vn-switch
+            :label="getText('optionTitle_reverseZoomDirection')"
+            v-model="options.reverseZoomDirection"
+          ></vn-switch>
+        </div>
+        <div class="option" v-if="enableContributions">
+          <vn-switch
+            :label="getText('optionTitle_showContribPage')"
+            v-model="options.showContribPage"
+          ></vn-switch>
+        </div>
+        <div class="option text-field">
+          <vn-text-field
+            :label="getText('optionTitle_zoomFactors')"
+            v-model="staticZoomFactors"
+            @update:modelValue="saveZoomFactors($event.trim())"
+          >
+          </vn-text-field>
+        </div>
+        <div class="option select">
+          <vn-select
+            :label="getText('optionTitle_appTheme')"
+            :items="listItems.appTheme"
+            v-model="options.appTheme"
+          >
+          </vn-select>
+        </div>
+        <div class="option button" v-if="enableContributions">
+          <vn-button
+            class="contribute-button vn-icon--start"
+            @click="showContribute"
+            ><vn-icon src="/src/contribute/assets/heart.svg"></vn-icon>
+            {{ getText('buttonLabel_contribute') }}
+          </vn-button>
+        </div>
+      </div>
+    </div>
+  </v-app>
 </template>
 
 <script>
-import {FormField, Switch, Select, TextField} from 'ext-components';
+import {toRaw} from 'vue';
+import {Button, Icon, Select, Switch, TextField} from 'vueton';
 
 import storage from 'storage/storage';
-import {getOptionLabels} from 'utils/app';
+import {getListItems, showContributePage} from 'utils/app';
 import {getText} from 'utils/common';
-import {targetEnv} from 'utils/config';
+import {targetEnv, enableContributions} from 'utils/config';
 import {optionKeys, chromeZoomFactors, firefoxZoomFactors} from 'utils/data';
 
 export default {
   components: {
+    [Button.name]: Button,
+    [Icon.name]: Icon,
     [Select.name]: Select,
-    [FormField.name]: FormField,
     [Switch.name]: Switch,
     [TextField.name]: TextField
   },
@@ -63,23 +93,38 @@ export default {
     return {
       dataLoaded: false,
 
-      selectOptions: getOptionLabels({
-        zoomGesture: ['primary_wheel', 'secondary_wheel'],
-        resetZoomGesture: [
-          'primary_secondary',
-          'secondary_primary',
-          'primary_auxiliary',
-          'secondary_auxiliary'
-        ]
-      }),
+      listItems: {
+        ...getListItems(
+          {zoomGesture: ['primary_wheel', 'secondary_wheel']},
+          {scope: 'optionValue_zoomGesture'}
+        ),
+        ...getListItems(
+          {
+            resetZoomGesture: [
+              'primary_secondary',
+              'secondary_primary',
+              'primary_auxiliary',
+              'secondary_auxiliary'
+            ]
+          },
+          {scope: 'optionValue_resetZoomGesture'}
+        ),
+        ...getListItems(
+          {appTheme: ['auto', 'light', 'dark']},
+          {scope: 'optionValue_appTheme'}
+        )
+      },
 
       staticZoomFactors: '',
+      enableContributions,
 
       options: {
         zoomGesture: '',
         reverseZoomDirection: false,
         resetZoomGesture: '',
-        zoomFactors: []
+        zoomFactors: [],
+        appTheme: '',
+        showContribPage: false
       }
     };
   },
@@ -88,8 +133,11 @@ export default {
     getText,
 
     saveZoomFactors: function (value) {
-      const minValue = targetEnv === 'firefox' ? 0.3 : 0.25;
-      const maxValue = 5;
+      const defaultZoomFactors =
+        targetEnv === 'firefox' ? firefoxZoomFactors : chromeZoomFactors;
+
+      const minValue = defaultZoomFactors.at(0);
+      const maxValue = defaultZoomFactors.at(-1);
 
       const zoomFactors = value
         .split(',')
@@ -104,9 +152,7 @@ export default {
         .filter(Boolean);
 
       if (!zoomFactors.length) {
-        zoomFactors.push(
-          ...(targetEnv === 'firefox' ? firefoxZoomFactors : chromeZoomFactors)
-        );
+        zoomFactors.push(...defaultZoomFactors);
       }
 
       this.options.zoomFactors = zoomFactors;
@@ -114,17 +160,27 @@ export default {
 
     loadZoomFactors: function () {
       this.staticZoomFactors = this.options.zoomFactors.join(', ');
+    },
+
+    showContribute: async function () {
+      await showContributePage();
     }
   },
 
   created: async function () {
-    const options = await storage.get(optionKeys, 'sync');
+    const options = await storage.get(optionKeys);
 
     for (const option of Object.keys(this.options)) {
       this.options[option] = options[option];
-      this.$watch(`options.${option}`, async function (value) {
-        await storage.set({[option]: value}, 'sync');
-      });
+
+      this.$watch(
+        `options.${option}`,
+        async function (value) {
+          await storage.set({[option]: toRaw(value)});
+          await browser.runtime.sendMessage({id: 'optionChange'});
+        },
+        {deep: true}
+      );
     }
 
     document.title = getText('pageTitle', [
@@ -140,71 +196,56 @@ export default {
 </script>
 
 <style lang="scss">
-$mdc-theme-primary: #1abc9c;
+@use 'vueton/styles' as vueton;
 
-@import '@material/select/mdc-select';
-@import '@material/typography/mixins';
+@include vueton.theme-base;
 
-body {
-  @include mdc-typography-base;
-  font-size: 100%;
-  background-color: #ffffff;
-  overflow: visible !important;
-  margin: 0;
-}
-
-#app {
+.v-application__wrap {
   display: grid;
   grid-row-gap: 32px;
+  grid-column-gap: 48px;
   padding: 24px;
+  grid-auto-rows: min-content;
+  grid-auto-columns: min-content;
 }
 
-.mdc-switch {
-  margin-right: 16px;
+.section-title {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.25px;
+  line-height: 32px;
 }
 
 .option-wrap {
   display: grid;
   grid-row-gap: 24px;
   padding-top: 24px;
-  grid-auto-columns: min-content;
 }
 
 .option {
   display: flex;
   align-items: center;
-  height: 24px;
+  height: 20px;
 
-  & .mdc-form-field {
-    max-width: calc(100vw - 48px);
-
-    & label {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
+  &.button {
+    height: 40px;
   }
-}
 
-.option {
   &.select,
   &.text-field {
     height: 56px;
   }
-}
 
-.option.select {
-  align-items: start;
-
-  & .mdc-select__anchor,
-  & .mdc-select__menu {
-    max-width: calc(100vw - 48px);
+  &.text-field .v-input__control {
+    width: 312px;
   }
 
-  & .mdc-select__selected-text {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  & .contribute-button {
+    @include vueton.theme-prop(color, primary);
+
+    & .vn-icon {
+      @include vueton.theme-prop(background-color, cta);
+    }
   }
 }
 </style>

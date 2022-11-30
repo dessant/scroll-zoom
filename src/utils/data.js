@@ -2,9 +2,12 @@ const optionKeys = [
   'zoomGesture',
   'reverseZoomDirection',
   'resetZoomGesture',
-  'zoomFactors'
+  'zoomFactors',
+  'appTheme',
+  'showContribPage'
 ];
 
+// prettier-ignore
 const chromeZoomFactors = [
   0.25,
   0.33,
@@ -25,6 +28,7 @@ const chromeZoomFactors = [
   5
 ];
 
+// prettier-ignore
 const firefoxZoomFactors = [
   0.3,
   0.5,
