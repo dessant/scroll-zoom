@@ -104,7 +104,7 @@ function main() {
     if (
       ev.deltaY &&
       ev.buttons === zoomGesture.code.combination &&
-      !ignoreZoomGesture()
+      !ignoreZoomGesture(ev)
     ) {
       stopEvent(ev);
       stopRelatedEvents(zoomGesture, ev);
@@ -125,23 +125,25 @@ function main() {
     }
   }
 
-  function isSelection() {
+  function isSelection(targetNode) {
     try {
       return (
-        !window.getSelection().isCollapsed ||
+        !document.getSelection().isCollapsed ||
+        Boolean(document.getSelection()?.toString()) ||
         document.activeElement?.selectionStart !==
-          document.activeElement?.selectionEnd
+          document.activeElement?.selectionEnd ||
+        targetNode.selectionStart !== targetNode.selectionEnd
       );
     } catch (ex) {}
 
     return false;
   }
 
-  function ignoreZoomGesture() {
+  function ignoreZoomGesture(ev) {
     if (
-      zoomGesture.text.steps.includes('primary') &&
       ignoreZoomGestureSelection &&
-      isSelection()
+      zoomGesture.text.steps.includes('primary') &&
+      isSelection(ev.composedPath()[0])
     ) {
       return true;
     }
