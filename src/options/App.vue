@@ -101,7 +101,7 @@ export default {
 
       listItems: {
         ...getListItems(
-          {zoomGesture: ['primary_wheel', 'secondary_wheel']},
+          {zoomGesture: ['primary_wheel', 'secondary_wheel', 'false']},
           {scope: 'optionValue_zoomGesture'}
         ),
         ...getListItems(
@@ -110,7 +110,8 @@ export default {
               'primary_secondary',
               'secondary_primary',
               'primary_auxiliary',
-              'secondary_auxiliary'
+              'secondary_auxiliary',
+              'false'
             ]
           },
           {scope: 'optionValue_resetZoomGesture'}

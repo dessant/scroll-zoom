@@ -24,6 +24,11 @@
     "description": "Value of the option."
   },
 
+  "optionValue_zoomGesture_false": {
+    "message": "Disable",
+    "description": "Value of the option."
+  },
+
   "optionTitle_reverseZoomDirection": {
     "message": "Reverse zoom direction",
     "description": "Title of the option."
@@ -51,6 +56,11 @@
 
   "optionValue_resetZoomGesture_secondary_auxiliary": {
     "message": "Secondary and auxiliary mouse button",
+    "description": "Value of the option."
+  },
+
+  "optionValue_resetZoomGesture_false": {
+    "message": "Disable",
     "description": "Value of the option."
   },
 

@@ -27,6 +27,10 @@ function main() {
   };
 
   function createMouseGesture(gesture) {
+    if (gesture === 'false') {
+      return false;
+    }
+
     const gestureSteps = gesture.split('_');
 
     const data = {
@@ -103,7 +107,7 @@ function main() {
   function onWheel(ev) {
     if (
       ev.deltaY &&
-      ev.buttons === zoomGesture.code.combination &&
+      ev.buttons === zoomGesture?.code.combination &&
       !ignoreZoomGesture(ev)
     ) {
       stopEvent(ev);
@@ -115,8 +119,8 @@ function main() {
 
   function onMousedown(ev) {
     if (
-      ev.buttons === resetZoomGesture.code.combination &&
-      ev.button === resetZoomGesture.code.steps[1]
+      ev.buttons === resetZoomGesture?.code.combination &&
+      ev.button === resetZoomGesture?.code.steps[1]
     ) {
       stopEvent(ev);
       stopRelatedEvents(resetZoomGesture, ev);
@@ -142,7 +146,7 @@ function main() {
   function ignoreZoomGesture(ev) {
     if (
       ignoreZoomGestureSelection &&
-      zoomGesture.text.steps.includes('primary') &&
+      zoomGesture?.text.steps.includes('primary') &&
       isSelection(ev.composedPath()[0])
     ) {
       return true;
