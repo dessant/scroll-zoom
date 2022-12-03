@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/dessant/scroll-zoom/compare/v1.1.1...v2.0.0) (2022-12-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* browser versions older than Chrome 92, Edge 92,
+Firefox 91, and Opera 78 are no longer supported
+
+### Features
+
+* add support for disabling gestures ([ededc9c](https://github.com/dessant/scroll-zoom/commit/ededc9cb910d53e8ced702d8fcd7fbeac92047ec))
+* ignore zoom gesture during text selection ([a2d8653](https://github.com/dessant/scroll-zoom/commit/a2d8653267168b385cdde3d5ba5190ccc7cc0926)), closes [#8](https://github.com/dessant/scroll-zoom/issues/8)
+* migrate to Vuetify ([ee02b7a](https://github.com/dessant/scroll-zoom/commit/ee02b7a3e092969f6e094c77f2d261882aeddc47))
+
+
+### Bug Fixes
+
+* detect text selection in open Shadow DOM ([5cfc97a](https://github.com/dessant/scroll-zoom/commit/5cfc97a4f05db36ef9f20159625b48794528e5d3))
+
 ### [1.1.1](https://github.com/dessant/scroll-zoom/compare/v1.1.0...v1.1.1) (2021-04-18)
 
 
