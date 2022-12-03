@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/dessant/scroll-zoom/compare/v2.0.0...v2.0.1) (2022-12-03)
+
+
+### Bug Fixes
+
+* update build script ([422d063](https://github.com/dessant/scroll-zoom/commit/422d0638a54bcd380d05c12c430d3d2f169ba0ad))
+
 ## [2.0.0](https://github.com/dessant/scroll-zoom/compare/v1.1.1...v2.0.0) (2022-12-03)
 
 
