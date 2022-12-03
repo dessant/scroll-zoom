@@ -29,7 +29,14 @@ with the left or right mouse button and the scroll wheel.
 ## Screenshots
 
 <p>
-  <img width="414" src="https://i.imgur.com/Af6TVDs.png">
+  <picture>
+    <source srcset="https://i.imgur.com/Rc0uVsv.png" media="(prefers-color-scheme: dark)">
+    <img width="380" src="https://i.imgur.com/rzDSrml.png">
+  </picture>
+  <picture>
+    <source srcset="https://i.imgur.com/eegrpNN.png" media="(prefers-color-scheme: dark)">
+    <img width="380" src="https://i.imgur.com/5zbwm3J.png">
+  </picture>
 </p>
 
 ## License
