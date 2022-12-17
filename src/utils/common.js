@@ -36,7 +36,7 @@ async function scriptsAllowed(tabId, frameId = 0) {
       code: 'true;'
     });
     return true;
-  } catch (e) {}
+  } catch (err) {}
 }
 
 async function getPlatform({fallback = true} = {}) {

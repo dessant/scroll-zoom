@@ -83,7 +83,7 @@ import {Button, Icon, Select, Switch, TextField} from 'vueton';
 import storage from 'storage/storage';
 import {getListItems, showContributePage} from 'utils/app';
 import {getText} from 'utils/common';
-import {targetEnv, enableContributions} from 'utils/config';
+import {enableContributions} from 'utils/config';
 import {optionKeys, chromeZoomFactors, firefoxZoomFactors} from 'utils/data';
 
 export default {
@@ -142,7 +142,7 @@ export default {
 
     saveZoomFactors: function (value) {
       const defaultZoomFactors =
-        targetEnv === 'firefox' ? firefoxZoomFactors : chromeZoomFactors;
+        this.$env.isFirefox ? firefoxZoomFactors : chromeZoomFactors;
 
       const minValue = defaultZoomFactors.at(0);
       const maxValue = defaultZoomFactors.at(-1);

@@ -45,7 +45,6 @@ async function insertBaseModule({activeTab = false} = {}) {
       runAt: 'document_start',
       file: '/src/insert/script.js'
     });
-    console.log(111, tab.url);
   }
 }
 

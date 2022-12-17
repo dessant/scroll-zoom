@@ -6,8 +6,8 @@ import {getDarkColorSchemeQuery} from 'utils/common';
 const LightTheme = {
   dark: false,
   colors: {
-    background: '#FFFBFE',
-    surface: '#FFFBFE',
+    background: '#FFFFFF',
+    surface: '#FFFFFF',
     primary: '#6750A4',
     secondary: '#625B71'
   }
@@ -32,6 +32,8 @@ async function configTheme(vuetify) {
     if (theme === 'auto') {
       theme = getDarkColorSchemeQuery().matches ? 'dark' : 'light';
     }
+
+    document.documentElement.style.setProperty('color-scheme', theme);
 
     vuetify.theme.global.name.value = theme;
   }

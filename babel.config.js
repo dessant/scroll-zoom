@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('node:path');
 
 const corejsVersion = require(path.join(
   path.dirname(require.resolve('core-js')),
