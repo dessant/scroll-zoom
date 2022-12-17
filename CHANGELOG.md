@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/dessant/scroll-zoom/compare/v2.0.1...v2.0.2) (2022-12-17)
+
+
+### Bug Fixes
+
+* set color scheme ([4e9a1d1](https://github.com/dessant/scroll-zoom/commit/4e9a1d1f316064d1dc8a1025672120d45c56f6a3))
+* set manifest CSP in Firefox ([e8b1cbb](https://github.com/dessant/scroll-zoom/commit/e8b1cbb0a44934193934331643b4d44a2f73148c))
+
 ### [2.0.1](https://github.com/dessant/scroll-zoom/compare/v2.0.0...v2.0.1) (2022-12-03)
 
 
