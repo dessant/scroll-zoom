@@ -31,14 +31,18 @@ and the customization of zoom levels is also supported.
 ## Screenshots
 
 <p>
-  <picture>
-    <source srcset="https://i.imgur.com/Rc0uVsv.png" media="(prefers-color-scheme: dark)">
-    <img width="380" src="https://i.imgur.com/rzDSrml.png">
-  </picture>
-  <picture>
-    <source srcset="https://i.imgur.com/eegrpNN.png" media="(prefers-color-scheme: dark)">
-    <img width="380" src="https://i.imgur.com/5zbwm3J.png">
-  </picture>
+  <a href="https://i.imgur.com/7vxBiJJ.png">
+    <picture>
+      <source srcset="https://i.imgur.com/Rc0uVsv.png" media="(prefers-color-scheme: dark)">
+      <img width="380" src="https://i.imgur.com/7vxBiJJ.png">
+    </picture>
+  </a>
+  <a href="https://i.imgur.com/Cp99YhL.png">
+    <picture>
+      <source srcset="https://i.imgur.com/eegrpNN.png" media="(prefers-color-scheme: dark)">
+      <img width="380" src="https://i.imgur.com/Cp99YhL.png">
+    </picture>
+  </a>
 </p>
 
 ## License
