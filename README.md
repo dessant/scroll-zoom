@@ -3,11 +3,11 @@
 
 <p align="center">
   </br></br>
-  <a href="https://chrome.google.com/webstore/detail/ccfomhdaagemnbhbpminjoggkbglmcgb">
+  <a href="https://chrome.google.com/webstore/detail/scroll-zoom/ccfomhdaagemnbhbpminjoggkbglmcgb">
     <img height="58" src="https://i.imgur.com/K9Yh8G9.png" alt="Chrome Web Store"></a>
   <a href="https://addons.mozilla.org/en-US/firefox/addon/scroll-zoom/">
     <img height="58" src="https://i.imgur.com/2jJOtTI.png" alt="Firefox add-ons"></a>
-  <a href="https://microsoftedge.microsoft.com/addons/detail/pafomddlmihbmamkddcolihjafncmigm">
+  <a href="https://microsoftedge.microsoft.com/addons/detail/scroll-zoom/pafomddlmihbmamkddcolihjafncmigm">
     <img height="58" src="https://i.imgur.com/es2YFRA.png" alt="Microsoft Store"></a>
   </br></br>
 </p>
@@ -43,7 +43,7 @@ and the customization of zoom levels is also supported.
 
 ## License
 
-Copyright (c) 2017-2022 Armin Sebastian
+Copyright (c) 2017-2023 Armin Sebastian
 
 This software is released under the terms of the GNU General Public License v3.0.
 See the [LICENSE](LICENSE) file for further information.
