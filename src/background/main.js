@@ -7,23 +7,24 @@ import storage from 'storage/storage';
 import {
   insertBaseModule,
   processMessageResponse,
-  processAppUse
+  processAppUse,
+  showOptionsPage
 } from 'utils/app';
 import {getPlatform} from 'utils/common';
-import {targetEnv} from 'utils/config';
+import {targetEnv, mv3} from 'utils/config';
 
 const queue = new Queue({concurrency: 1});
 
-let reverseZoomDirection;
-let zoomFactors;
+let reverseZoomDirection = null;
+let zoomFactors = null;
 
-async function syncState() {
+async function syncState({syncBrowserSettings = true} = {}) {
   ({reverseZoomDirection, zoomFactors} = await storage.get([
     'reverseZoomDirection',
     'zoomFactors'
   ]));
 
-  if (targetEnv === 'firefox') {
+  if (targetEnv === 'firefox' && syncBrowserSettings) {
     const {zoomGesture, resetZoomGesture} = await storage.get([
       'zoomGesture',
       'resetZoomGesture'
@@ -44,7 +45,7 @@ async function onOptionChange() {
 }
 
 async function onActionButtonClick(tab) {
-  await browser.runtime.openOptionsPage();
+  await showOptionsPage();
 }
 
 async function processMessage(request, sender) {
@@ -53,7 +54,7 @@ async function processMessage(request, sender) {
   } else if (request.id === 'resetZoomLevel') {
     queue.add(() => resetZoomLevel(sender.tab.id));
   } else if (request.id === 'getPlatform') {
-    return getPlatform({fallback: false});
+    return getPlatform();
   } else if (request.id === 'optionChange') {
     await onOptionChange();
   }
@@ -68,13 +69,25 @@ function onMessage(request, sender, sendResponse) {
 async function onInstall(details) {
   if (
     ['install', 'update'].includes(details.reason) &&
-    ['chrome', 'edge'].includes(targetEnv)
+    ['chrome', 'edge', 'opera', 'samsung'].includes(targetEnv)
   ) {
     await insertBaseModule();
   }
 }
 
+async function onStartup() {
+  if (['samsung'].includes(targetEnv)) {
+    // Samsung Internet: Content script is not always run in restored
+    // active tab on startup.
+    await insertBaseModule({activeTab: true});
+  }
+}
+
 async function zoomPage(tabId, zoomIn) {
+  if (reverseZoomDirection === null) {
+    await syncState({syncBrowserSettings: false});
+  }
+
   if (reverseZoomDirection) {
     zoomIn = !zoomIn;
   }
@@ -97,8 +110,12 @@ async function resetZoomLevel(tabId) {
   await processAppUse();
 }
 
-function addBrowserActionListener() {
-  browser.browserAction.onClicked.addListener(onActionButtonClick);
+function addActionListener() {
+  if (mv3) {
+    browser.action.onClicked.addListener(onActionButtonClick);
+  } else {
+    browser.browserAction.onClicked.addListener(onActionButtonClick);
+  }
 }
 
 function addMessageListener() {
@@ -107,6 +124,11 @@ function addMessageListener() {
 
 function addInstallListener() {
   browser.runtime.onInstalled.addListener(onInstall);
+}
+
+function addStartupListener() {
+  // Not fired in private browsing mode.
+  browser.runtime.onStartup.addListener(onStartup);
 }
 
 async function setup() {
@@ -119,9 +141,10 @@ async function setup() {
 }
 
 function init() {
-  addBrowserActionListener();
+  addActionListener();
   addMessageListener();
   addInstallListener();
+  addStartupListener();
 
   setup();
 }

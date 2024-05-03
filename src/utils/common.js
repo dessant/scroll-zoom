@@ -1,23 +1,99 @@
-import {targetEnv} from 'utils/config';
+import {isStorageArea} from 'storage/storage';
+import storage from 'storage/storage';
+import {targetEnv, mv3} from 'utils/config';
 
 function getText(messageName, substitutions) {
   return browser.i18n.getMessage(messageName, substitutions);
 }
 
-function executeCode(string, tabId, frameId = 0, runAt = 'document_start') {
-  return browser.tabs.executeScript(tabId, {
-    frameId: frameId,
-    runAt: runAt,
-    code: string
-  });
+function executeScript({
+  files = null,
+  func = null,
+  tabId = null,
+  frameIds = [0],
+  allFrames = false,
+  world = 'ISOLATED',
+  injectImmediately = true,
+
+  code = ''
+}) {
+  if (mv3) {
+    const params = {target: {tabId, allFrames}, world, injectImmediately};
+
+    if (!allFrames) {
+      params.target.frameIds = frameIds;
+    }
+
+    if (files) {
+      params.files = files;
+    } else {
+      params.func = func;
+    }
+
+    return chrome.scripting.executeScript(params);
+  } else {
+    const params = {frameId: frameIds[0]};
+
+    if (files) {
+      params.file = files[0];
+    } else {
+      params.code = code;
+    }
+
+    if (injectImmediately) {
+      params.runAt = 'document_start';
+    }
+
+    return browser.tabs.executeScript(tabId, params);
+  }
 }
 
-function executeFile(file, tabId, frameId = 0, runAt = 'document_start') {
-  return browser.tabs.executeScript(tabId, {
-    frameId: frameId,
-    runAt: runAt,
-    file: file
-  });
+async function scriptsAllowed(tabId, frameId = 0) {
+  try {
+    await executeScript({
+      func: () => true,
+      code: 'true;',
+      tabId: tab.id,
+      frameIds: [frameId]
+    });
+
+    return true;
+  } catch (err) {}
+}
+
+async function createTab({
+  url = '',
+  index = null,
+  active = true,
+  openerTabId = null,
+  getTab = false
+} = {}) {
+  const props = {url, active};
+
+  if (index !== null) {
+    props.index = index;
+  }
+  if (openerTabId !== null) {
+    props.openerTabId = openerTabId;
+  }
+
+  let tab = await browser.tabs.create(props);
+
+  if (getTab) {
+    if (targetEnv === 'samsung') {
+      // Samsung Internet 13: tabs.create returns previously active tab.
+      // Samsung Internet 13: tabs.query may not immediately return newly created tabs.
+      let count = 1;
+      while (count <= 500 && (!tab || tab.url !== url)) {
+        [tab] = await browser.tabs.query({lastFocusedWindow: true, url});
+
+        await sleep(20);
+        count += 1;
+      }
+    }
+
+    return tab;
+  }
 }
 
 async function getActiveTab() {
@@ -28,35 +104,71 @@ async function getActiveTab() {
   return tab;
 }
 
-async function scriptsAllowed(tabId, frameId = 0) {
-  try {
-    await browser.tabs.executeScript(tabId, {
-      frameId: frameId,
-      runAt: 'document_start',
-      code: 'true;'
-    });
+async function isValidTab({tab, tabId = null} = {}) {
+  if (!tab && tabId !== null) {
+    tab = await browser.tabs.get(tabId).catch(err => null);
+  }
+
+  if (tab && tab.id !== browser.tabs.TAB_ID_NONE) {
     return true;
-  } catch (err) {}
+  }
 }
 
-async function getPlatform({fallback = true} = {}) {
-  let os, arch;
+let platformInfo;
+async function getPlatformInfo() {
+  if (platformInfo) {
+    return platformInfo;
+  }
 
-  if (targetEnv === 'samsung') {
-    // Samsung Internet 13: runtime.getPlatformInfo fails.
-    os = 'android';
-    arch = '';
+  const isSessionStorage = await isStorageArea({area: 'session'});
+
+  if (isSessionStorage) {
+    ({platformInfo} = await storage.get('platformInfo', {area: 'session'}));
   } else {
     try {
+      platformInfo = JSON.parse(window.sessionStorage.getItem('platformInfo'));
+    } catch (err) {}
+  }
+
+  if (!platformInfo) {
+    let os, arch;
+
+    if (targetEnv === 'samsung') {
+      // Samsung Internet 13: runtime.getPlatformInfo fails.
+      os = 'android';
+      arch = '';
+    } else if (targetEnv === 'safari') {
+      // Safari: runtime.getPlatformInfo returns 'ios' on iPadOS.
+      ({os, arch} = await browser.runtime.sendNativeMessage('application.id', {
+        id: 'getPlatformInfo'
+      }));
+    } else {
       ({os, arch} = await browser.runtime.getPlatformInfo());
-    } catch (err) {
-      if (fallback) {
-        ({os, arch} = await browser.runtime.sendMessage({id: 'getPlatform'}));
-      } else {
-        throw err;
-      }
+    }
+
+    platformInfo = {os, arch};
+
+    if (isSessionStorage) {
+      await storage.set({platformInfo}, {area: 'session'});
+    } else {
+      try {
+        window.sessionStorage.setItem(
+          'platformInfo',
+          JSON.stringify(platformInfo)
+        );
+      } catch (err) {}
     }
   }
+
+  return platformInfo;
+}
+
+async function getPlatform() {
+  if (!isBackgroundPageContext()) {
+    return browser.runtime.sendMessage({id: 'getPlatform'});
+  }
+
+  let {os, arch} = await getPlatformInfo();
 
   if (os === 'win') {
     os = 'windows';
@@ -64,16 +176,9 @@ async function getPlatform({fallback = true} = {}) {
     os = 'macos';
   }
 
-  if (
-    navigator.platform === 'MacIntel' &&
-    (os === 'ios' || typeof navigator.standalone !== 'undefined')
-  ) {
-    os = 'ipados';
-  }
-
-  if (arch === 'x86-32') {
+  if (['x86-32', 'i386'].includes(arch)) {
     arch = '386';
-  } else if (arch === 'x86-64') {
+  } else if (['x86-64', 'x86_64'].includes(arch)) {
     arch = 'amd64';
   } else if (arch.startsWith('arm')) {
     arch = 'arm';
@@ -89,11 +194,13 @@ async function getPlatform({fallback = true} = {}) {
   const isMobile = ['android', 'ios', 'ipados'].includes(os);
 
   const isChrome = targetEnv === 'chrome';
-  const isEdge = targetEnv === 'edge';
+  const isEdge =
+    ['chrome', 'edge'].includes(targetEnv) &&
+    /\sedg(?:e|a|ios)?\//i.test(navigator.userAgent);
   const isFirefox = targetEnv === 'firefox';
   const isOpera =
     ['chrome', 'opera'].includes(targetEnv) &&
-    / opr\//i.test(navigator.userAgent);
+    /\sopr\//i.test(navigator.userAgent);
   const isSafari = targetEnv === 'safari';
   const isSamsung = targetEnv === 'samsung';
 
@@ -129,13 +236,24 @@ function getDayPrecisionEpoch(epoch) {
   return epoch - (epoch % 86400000);
 }
 
+function isBackgroundPageContext() {
+  const backgroundUrl = mv3
+    ? browser.runtime.getURL('/src/background/script.js')
+    : browser.runtime.getURL('/src/background/index.html');
+
+  return self.location.href === backgroundUrl;
+}
+
 export {
   getText,
-  executeCode,
-  executeFile,
-  getActiveTab,
+  executeScript,
   scriptsAllowed,
+  createTab,
+  getActiveTab,
+  isValidTab,
+  getPlatformInfo,
   getPlatform,
   getDarkColorSchemeQuery,
-  getDayPrecisionEpoch
+  getDayPrecisionEpoch,
+  isBackgroundPageContext
 };

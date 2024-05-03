@@ -1,5 +1,5 @@
 <template>
-  <v-app id="app">
+  <vn-app>
     <vn-contribute
       :extName="extName"
       :extSlug="extSlug"
@@ -7,13 +7,15 @@
       @open="contribute"
     >
     </vn-contribute>
-  </v-app>
+  </vn-app>
 </template>
 
 <script>
+import {App} from 'vueton';
 import {Contribute} from 'vueton/components/contribute';
 
-import {getText, getActiveTab} from 'utils/common';
+import {showPage} from 'utils/app';
+import {getText} from 'utils/common';
 
 window.addEventListener(
   'contextmenu',
@@ -26,6 +28,7 @@ window.addEventListener(
 
 export default {
   components: {
+    [App.name]: App,
     [Contribute.name]: Contribute
   },
 
@@ -38,10 +41,15 @@ export default {
   },
 
   methods: {
-    contribute: async function ({url} = {}) {
-      const activeTab = await getActiveTab();
+    setup: function () {
+      const query = new URL(window.location.href).searchParams;
+      if (query.get('action') === 'auto') {
+        this.notice = `This page is shown once a year while using the extension.`;
+      }
+    },
 
-      await browser.tabs.create({url, index: activeTab.index + 1});
+    contribute: async function ({url} = {}) {
+      await showPage({url});
     }
   },
 
@@ -51,10 +59,7 @@ export default {
       this.extName
     ]);
 
-    const query = new URL(window.location.href).searchParams;
-    if (query.get('action') === 'auto') {
-      this.notice = 'This page is shown once a year while using the extension.';
-    }
+    this.setup();
   }
 };
 </script>

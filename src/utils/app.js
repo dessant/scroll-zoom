@@ -1,26 +1,38 @@
 import storage from 'storage/storage';
 import {
   getText,
+  executeScript,
+  createTab,
   getActiveTab,
+  isValidTab,
   getPlatform,
-  getDayPrecisionEpoch
+  getDayPrecisionEpoch,
+  getDarkColorSchemeQuery
 } from 'utils/common';
 import {targetEnv, enableContributions} from 'utils/config';
 
-function getListItems(data, {scope = ''} = {}) {
-  const labels = {};
-  for (const [group, items] of Object.entries(data)) {
-    labels[group] = [];
-    items.forEach(function (value) {
-      const item = {
-        value,
-        title: getText(`${scope ? scope + '_' : ''}${value}`)
-      };
+function getListItems(data, {scope = '', shortScope = ''} = {}) {
+  const results = {};
 
-      labels[group].push(item);
+  for (const [group, items] of Object.entries(data)) {
+    results[group] = [];
+
+    items.forEach(function (item) {
+      if (item.value === undefined) {
+        item = {value: item};
+      }
+
+      item.title = getText(`${scope ? scope + '_' : ''}${item.value}`);
+
+      if (shortScope) {
+        item.shortTitle = getText(`${shortScope}_${item.value}`);
+      }
+
+      results[group].push(item);
     });
   }
-  return labels;
+
+  return results;
 }
 
 async function insertBaseModule({activeTab = false} = {}) {
@@ -40,21 +52,11 @@ async function insertBaseModule({activeTab = false} = {}) {
   }
 
   for (const tab of tabs) {
-    browser.tabs.executeScript(tab.id, {
-      allFrames: true,
-      runAt: 'document_start',
-      file: '/src/insert/script.js'
+    executeScript({
+      files: ['/src/base/script.js'],
+      tabId: tab.id,
+      allFrames: true
     });
-  }
-}
-
-async function configApp(app) {
-  const platform = await getPlatform();
-
-  document.documentElement.classList.add(platform.targetEnv, platform.os);
-
-  if (app) {
-    app.config.globalProperties.$env = platform;
   }
 }
 
@@ -78,35 +80,77 @@ function processMessageResponse(response, sendResponse) {
   }
 }
 
-async function showContributePage({
-  action = '',
-  activeTab = null,
-  setOpenerTab = true,
-  updateStats = true
-} = {}) {
-  if (updateStats) {
-    await storage.set({contribPageLastOpen: getDayPrecisionEpoch()});
+async function configApp(app) {
+  const platform = await getPlatform();
+
+  const classes = [platform.targetEnv, platform.os];
+  document.documentElement.classList.add(...classes);
+
+  if (app) {
+    app.config.globalProperties.$env = platform;
+  }
+}
+
+async function getAppTheme(theme) {
+  if (!theme) {
+    ({appTheme: theme} = await storage.get('appTheme'));
   }
 
+  if (theme === 'auto') {
+    theme = getDarkColorSchemeQuery().matches ? 'dark' : 'light';
+  }
+
+  return theme;
+}
+
+function addSystemThemeListener(callback) {
+  getDarkColorSchemeQuery().addEventListener('change', function () {
+    callback();
+  });
+}
+
+function addAppThemeListener(callback) {
+  browser.storage.onChanged.addListener(function (changes, area) {
+    if (area === 'local' && changes.appTheme) {
+      callback();
+    }
+  });
+}
+
+function addThemeListener(callback) {
+  addSystemThemeListener(callback);
+  addAppThemeListener(callback);
+}
+
+async function getOpenerTabId({tab, tabId = null} = {}) {
+  if (!tab && tabId !== null) {
+    tab = await browser.tabs.get(tabId).catch(err => null);
+  }
+
+  if ((await isValidTab({tab})) && !(await getPlatform()).isMobile) {
+    return tab.id;
+  }
+
+  return null;
+}
+
+async function showPage({
+  url = '',
+  setOpenerTab = true,
+  getTab = false,
+  activeTab = null
+} = {}) {
   if (!activeTab) {
     activeTab = await getActiveTab();
   }
-  let url = browser.runtime.getURL('/src/contribute/index.html');
-  if (action) {
-    url = `${url}?action=${action}`;
+
+  const props = {url, index: activeTab.index + 1, active: true, getTab};
+
+  if (setOpenerTab) {
+    props.openerTabId = await getOpenerTabId({tab: activeTab});
   }
 
-  const props = {url, index: activeTab.index + 1, active: true};
-
-  if (
-    setOpenerTab &&
-    activeTab.id !== browser.tabs.TAB_ID_NONE &&
-    (await getPlatform()).os !== 'android'
-  ) {
-    props.openerTabId = activeTab.id;
-  }
-
-  return browser.tabs.create(props);
+  return createTab(props);
 }
 
 async function autoShowContributePage({
@@ -114,9 +158,8 @@ async function autoShowContributePage({
   minInstallDays = 0,
   minLastOpenDays = 0,
   minLastAutoOpenDays = 0,
-  activeTab = null,
-  setOpenerTab = true,
-  action = 'auto'
+  action = 'auto',
+  activeTab = null
 } = {}) {
   if (enableContributions) {
     const options = await storage.get([
@@ -143,9 +186,9 @@ async function autoShowContributePage({
 
       return showContributePage({
         action,
+        updateStats: false,
         activeTab,
-        setOpenerTab,
-        updateStats: false
+        getTab: true
       });
     }
   }
@@ -164,15 +207,13 @@ async function updateUseCount({
 
     if (useCount < maxUseCount) {
       await storage.set({useCount: useCount + valueChange});
+    } else if (useCount > maxUseCount) {
+      await storage.set({useCount: maxUseCount});
     }
   }
 }
 
-async function processAppUse({
-  activeTab = null,
-  setOpenerTab = true,
-  action = 'auto'
-} = {}) {
+async function processAppUse({action = 'auto', activeTab = null} = {}) {
   await updateUseCount({
     valueChange: 1,
     maxUseCount: 1000,
@@ -185,19 +226,52 @@ async function processAppUse({
     minLastOpenDays: 14,
     minLastAutoOpenDays: 365,
     activeTab,
-    setOpenerTab,
     action
+  });
+}
+
+async function showContributePage({
+  action = '',
+  updateStats = true,
+  getTab = false,
+  activeTab = null
+} = {}) {
+  if (updateStats) {
+    await storage.set({contribPageLastOpen: getDayPrecisionEpoch()});
+  }
+
+  let url = browser.runtime.getURL('/src/contribute/index.html');
+  if (action) {
+    url = `${url}?action=${action}`;
+  }
+
+  return showPage({url, getTab, activeTab});
+}
+
+async function showOptionsPage({getTab = false, activeTab = null} = {}) {
+  // Samsung Internet 13: runtime.openOptionsPage fails.
+  // runtime.openOptionsPage adds new tab at the end of the tab list.
+  return showPage({
+    url: browser.runtime.getURL('/src/options/index.html'),
+    getTab,
+    activeTab
   });
 }
 
 export {
   getListItems,
   insertBaseModule,
-  configApp,
   loadFonts,
   processMessageResponse,
-  showContributePage,
+  configApp,
+  getAppTheme,
+  addSystemThemeListener,
+  addAppThemeListener,
+  addThemeListener,
+  showPage,
   autoShowContributePage,
   updateUseCount,
-  processAppUse
+  processAppUse,
+  showContributePage,
+  showOptionsPage
 };

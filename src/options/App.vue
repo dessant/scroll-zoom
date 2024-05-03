@@ -1,5 +1,5 @@
 <template>
-  <v-app id="app" v-if="dataLoaded">
+  <vn-app v-if="dataLoaded">
     <div class="section">
       <div class="section-title" v-once>
         {{ getText('optionSectionTitle_gestures') }}
@@ -10,6 +10,7 @@
             :label="getText('optionTitle_zoomGesture')"
             :items="listItems.zoomGesture"
             v-model="options.zoomGesture"
+            transition="scale-transition"
           >
           </vn-select>
         </div>
@@ -18,6 +19,7 @@
             :label="getText('optionTitle_resetZoomGesture')"
             :items="listItems.resetZoomGesture"
             v-model="options.resetZoomGesture"
+            transition="scale-transition"
           >
           </vn-select>
         </div>
@@ -34,6 +36,7 @@
             :label="getText('optionTitle_appTheme')"
             :items="listItems.appTheme"
             v-model="options.appTheme"
+            transition="scale-transition"
           >
           </vn-select>
         </div>
@@ -67,18 +70,20 @@
           <vn-button
             class="contribute-button vn-icon--start"
             @click="showContribute"
-            ><vn-icon src="/src/contribute/assets/heart.svg"></vn-icon>
+            ><vn-icon
+              src="/src/assets/icons/misc/favorite-filled.svg"
+            ></vn-icon>
             {{ getText('buttonLabel_contribute') }}
           </vn-button>
         </div>
       </div>
     </div>
-  </v-app>
+  </vn-app>
 </template>
 
 <script>
 import {toRaw} from 'vue';
-import {Button, Icon, Select, Switch, TextField} from 'vueton';
+import {App, Button, Icon, Select, Switch, TextField} from 'vueton';
 
 import storage from 'storage/storage';
 import {getListItems, showContributePage} from 'utils/app';
@@ -88,6 +93,7 @@ import {optionKeys, chromeZoomFactors, firefoxZoomFactors} from 'utils/data';
 
 export default {
   components: {
+    [App.name]: App,
     [Button.name]: Button,
     [Icon.name]: Icon,
     [Select.name]: Select,
@@ -140,9 +146,31 @@ export default {
   methods: {
     getText,
 
+    setup: async function () {
+      const options = await storage.get(optionKeys);
+
+      for (const option of Object.keys(this.options)) {
+        this.options[option] = options[option];
+
+        this.$watch(
+          `options.${option}`,
+          async function (value) {
+            await storage.set({[option]: toRaw(value)});
+            await browser.runtime.sendMessage({id: 'optionChange'});
+          },
+          {deep: true}
+        );
+      }
+
+      this.loadZoomFactors();
+
+      this.dataLoaded = true;
+    },
+
     saveZoomFactors: function (value) {
-      const defaultZoomFactors =
-        this.$env.isFirefox ? firefoxZoomFactors : chromeZoomFactors;
+      const defaultZoomFactors = this.$env.isFirefox
+        ? firefoxZoomFactors
+        : chromeZoomFactors;
 
       const minValue = defaultZoomFactors.at(0);
       const maxValue = defaultZoomFactors.at(-1);
@@ -176,29 +204,12 @@ export default {
   },
 
   created: async function () {
-    const options = await storage.get(optionKeys);
-
-    for (const option of Object.keys(this.options)) {
-      this.options[option] = options[option];
-
-      this.$watch(
-        `options.${option}`,
-        async function (value) {
-          await storage.set({[option]: toRaw(value)});
-          await browser.runtime.sendMessage({id: 'optionChange'});
-        },
-        {deep: true}
-      );
-    }
-
     document.title = getText('pageTitle', [
       getText('pageTitle_options'),
       getText('extensionName')
     ]);
 
-    this.loadZoomFactors();
-
-    this.dataLoaded = true;
+    this.setup();
   }
 };
 </script>
@@ -207,6 +218,7 @@ export default {
 @use 'vueton/styles' as vueton;
 
 @include vueton.theme-base;
+@include vueton.transitions;
 
 .v-application__wrap {
   display: grid;
