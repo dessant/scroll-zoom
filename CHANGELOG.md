@@ -13,6 +13,7 @@ Firefox 115 and Opera 108 are no longer supported
 ### Features
 
 * upgrade to Manifest V3 in Chrome ([819a509](https://github.com/dessant/scroll-zoom/commit/819a50905a971d84bce7cb23ea3ee2fe95cb1f35))
+* use non-persistent background page in Firefox
 
 ### [2.0.2](https://github.com/dessant/scroll-zoom/compare/v2.0.1...v2.0.2) (2022-12-17)
 
