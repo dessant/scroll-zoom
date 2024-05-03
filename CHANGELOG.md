@@ -1,6 +1,18 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [3.0.0](https://github.com/dessant/scroll-zoom/compare/v2.0.2...v3.0.0) (2024-05-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* browser versions older than Chrome 122, Edge 122,
+Firefox 115 and Opera 108 are no longer supported
+
+### Features
+
+* upgrade to Manifest V3 in Chrome ([819a509](https://github.com/dessant/scroll-zoom/commit/819a50905a971d84bce7cb23ea3ee2fe95cb1f35))
 
 ### [2.0.2](https://github.com/dessant/scroll-zoom/compare/v2.0.1...v2.0.2) (2022-12-17)
 
