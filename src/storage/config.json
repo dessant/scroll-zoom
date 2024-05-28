@@ -6,8 +6,9 @@
       "hFuE7x3XP",
       "FxfmckFkJt",
       "20221027125314_add_theme_support",
-      "20221130194035_add_ignorezoomgestureselection"
+      "20221130194035_add_ignorezoomgestureselection",
+      "20240514170322_add_appversion"
     ],
-    "sync": []
+    "session": ["20240514122825_initial_version"]
   }
 }

@@ -7,7 +7,7 @@
   "homepage_url": "https://github.com/dessant/scroll-zoom",
   "default_locale": "en",
 
-  "minimum_chrome_version": "122.0",
+  "minimum_chrome_version": "123.0",
 
   "permissions": ["storage", "scripting"],
 

@@ -203,7 +203,7 @@ export default {
     }
   },
 
-  created: async function () {
+  created: function () {
     document.title = getText('pageTitle', [
       getText('pageTitle_options'),
       getText('extensionName')

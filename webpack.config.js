@@ -5,6 +5,7 @@ const {VueLoaderPlugin} = require('vue-loader');
 const {VuetifyPlugin} = require('webpack-plugin-vuetify');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const appVersion = require('./package.json').version;
 const storageRevisions = require('./src/storage/config.json').revisions;
 
 const targetEnv = process.env.TARGET_ENV || 'chrome';
@@ -26,7 +27,9 @@ const plugins = [
     'process.env': {
       TARGET_ENV: JSON.stringify(targetEnv),
       STORAGE_REVISION_LOCAL: JSON.stringify(storageRevisions.local.at(-1)),
+      STORAGE_REVISION_SESSION: JSON.stringify(storageRevisions.session.at(-1)),
       ENABLE_CONTRIBUTIONS: JSON.stringify(enableContributions.toString()),
+      APP_VERSION: JSON.stringify(appVersion),
       MV3: JSON.stringify(mv3.toString())
     },
     __VUE_OPTIONS_API__: true,
@@ -40,7 +43,7 @@ const plugins = [
     filename: '[name]/style.css',
     ignoreOrder: true
   })
-].filter(Boolean);
+];
 
 const entries = {};
 

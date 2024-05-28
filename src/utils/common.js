@@ -1,4 +1,3 @@
-import {isStorageArea} from 'storage/storage';
 import storage from 'storage/storage';
 import {targetEnv, mv3} from 'utils/config';
 
@@ -6,19 +5,21 @@ function getText(messageName, substitutions) {
   return browser.i18n.getMessage(messageName, substitutions);
 }
 
-function executeScript({
+async function executeScript({
   files = null,
   func = null,
+  args = null,
   tabId = null,
   frameIds = [0],
   allFrames = false,
   world = 'ISOLATED',
   injectImmediately = true,
+  unwrapResults = true,
 
   code = ''
 }) {
   if (mv3) {
-    const params = {target: {tabId, allFrames}, world, injectImmediately};
+    const params = {target: {tabId, allFrames}, world};
 
     if (!allFrames) {
       params.target.frameIds = frameIds;
@@ -28,9 +29,23 @@ function executeScript({
       params.files = files;
     } else {
       params.func = func;
+
+      if (args) {
+        params.args = args;
+      }
     }
 
-    return chrome.scripting.executeScript(params);
+    if (targetEnv !== 'safari') {
+      params.injectImmediately = injectImmediately;
+    }
+
+    const results = await browser.scripting.executeScript(params);
+
+    if (unwrapResults) {
+      return results.map(item => item.result);
+    } else {
+      return results;
+    }
   } else {
     const params = {frameId: frameIds[0]};
 
@@ -46,19 +61,6 @@ function executeScript({
 
     return browser.tabs.executeScript(tabId, params);
   }
-}
-
-async function scriptsAllowed(tabId, frameId = 0) {
-  try {
-    await executeScript({
-      func: () => true,
-      code: 'true;',
-      tabId: tab.id,
-      frameIds: [frameId]
-    });
-
-    return true;
-  } catch (err) {}
 }
 
 async function createTab({
@@ -120,9 +122,7 @@ async function getPlatformInfo() {
     return platformInfo;
   }
 
-  const isSessionStorage = await isStorageArea({area: 'session'});
-
-  if (isSessionStorage) {
+  if (mv3) {
     ({platformInfo} = await storage.get('platformInfo', {area: 'session'}));
   } else {
     try {
@@ -148,7 +148,7 @@ async function getPlatformInfo() {
 
     platformInfo = {os, arch};
 
-    if (isSessionStorage) {
+    if (mv3) {
       await storage.set({platformInfo}, {area: 'session'});
     } else {
       try {
@@ -244,10 +244,27 @@ function isBackgroundPageContext() {
   return self.location.href === backgroundUrl;
 }
 
+function runOnce(name, func) {
+  name = `${name}Run`;
+
+  if (!self[name]) {
+    self[name] = true;
+
+    if (!func) {
+      return true;
+    }
+
+    return func();
+  }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => self.setTimeout(resolve, ms));
+}
+
 export {
   getText,
   executeScript,
-  scriptsAllowed,
   createTab,
   getActiveTab,
   isValidTab,
@@ -255,5 +272,7 @@ export {
   getPlatform,
   getDarkColorSchemeQuery,
   getDayPrecisionEpoch,
-  isBackgroundPageContext
+  isBackgroundPageContext,
+  runOnce,
+  sleep
 };
