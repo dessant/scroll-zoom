@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.0.0](https://github.com/dessant/scroll-zoom/compare/v3.0.0...v4.0.0) (2024-05-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* browser versions older than Chrome 123, Edge 123
+and Opera 109 are no longer supported
+
+### Bug Fixes
+
+* detect startup states ([a57fdc5](https://github.com/dessant/scroll-zoom/commit/a57fdc523c1c875d6e8489d0d2dbb8dd75530137))
+
 ## [3.0.0](https://github.com/dessant/scroll-zoom/compare/v2.0.2...v3.0.0) (2024-05-03)
 
 
