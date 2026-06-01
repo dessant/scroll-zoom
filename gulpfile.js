@@ -27,7 +27,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const enableContributions =
   (process.env.ENABLE_CONTRIBUTIONS || 'true') === 'true';
 
-const mv3 = ['chrome'].includes(targetEnv);
+const mv3 = ['chrome', 'edge'].includes(targetEnv);
 
 const distDir = path.join(__dirname, 'dist', targetEnv);
 
