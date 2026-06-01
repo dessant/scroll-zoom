@@ -16,6 +16,7 @@ import {
   appVersion,
   mv3
 } from 'utils/config';
+import {sponsorLogoVariants, supportUrl, sponsorSites} from 'utils/data';
 
 function getListItems(data, {scope = '', shortScope = ''} = {}) {
   const results = {};
@@ -270,6 +271,14 @@ async function showOptionsPage({getTab = false, activeTab = null} = {}) {
   });
 }
 
+async function showSponsorPage({
+  name = '',
+  getTab = false,
+  activeTab = null
+} = {}) {
+  return showPage({url: getSponsorUrl(name), getTab, activeTab});
+}
+
 async function setAppVersion() {
   await storage.set({appVersion});
 }
@@ -362,6 +371,18 @@ async function getStartupState({event = ''} = {}) {
   return startup;
 }
 
+function getSponsorUrl(name) {
+  return sponsorSites[name];
+}
+
+function getSponsorLogo(name, {variant = ''} = {}) {
+  if (variant && sponsorLogoVariants[name]?.includes(variant)) {
+    name += `-${variant}`;
+  }
+
+  return `/src/assets/icons/sponsors/${name}.svg`;
+}
+
 export {
   getListItems,
   insertBaseModule,
@@ -379,8 +400,11 @@ export {
   processAppUse,
   showContributePage,
   showOptionsPage,
+  showSponsorPage,
   setAppVersion,
   isSessionStartup,
   isStartup,
-  getStartupState
+  getStartupState,
+  getSponsorUrl,
+  getSponsorLogo
 };

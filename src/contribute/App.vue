@@ -4,7 +4,8 @@
       :extName="extName"
       :extSlug="extSlug"
       :notice="notice"
-      @open="contribute"
+      :theme="theme"
+      @open="showPage"
     >
     </vn-contribute>
   </vn-app>
@@ -14,17 +15,8 @@
 import {App} from 'vueton';
 import {Contribute} from 'vueton/components/contribute';
 
-import {showPage} from 'utils/app';
+import {showPage, getAppTheme} from 'utils/app';
 import {getText} from 'utils/common';
-
-window.addEventListener(
-  'contextmenu',
-  function (ev) {
-    ev.preventDefault();
-    ev.stopImmediatePropagation();
-  },
-  {capture: true, passive: false, once: true}
-);
 
 export default {
   components: {
@@ -36,21 +28,25 @@ export default {
     return {
       extName: getText('extensionName'),
       extSlug: 'scroll-zoom',
-      notice: ''
+      notice: '',
+      theme: ''
     };
   },
 
   methods: {
-    setup: function () {
+    setup: async function () {
       const query = new URL(window.location.href).searchParams;
       if (query.get('action') === 'auto') {
         this.notice = `This page is shown once a year while using the extension.`;
       }
+
+      this.theme = await getAppTheme();
+      document.addEventListener('themeChange', ev => {
+        this.theme = ev.detail;
+      });
     },
 
-    contribute: async function ({url} = {}) {
-      await showPage({url});
-    }
+    showPage
   },
 
   created: function () {

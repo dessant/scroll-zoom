@@ -49,4 +49,17 @@ const firefoxZoomFactors = [
   5
 ];
 
-export {optionKeys, chromeZoomFactors, firefoxZoomFactors};
+const sponsorLogoVariants = {};
+
+const sponsors = [];
+
+const sponsorSites = {};
+
+export {
+  optionKeys,
+  chromeZoomFactors,
+  firefoxZoomFactors,
+  sponsorLogoVariants,
+  sponsors,
+  sponsorSites
+};
