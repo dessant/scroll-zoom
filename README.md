@@ -23,9 +23,9 @@
 The continued development of Scroll Zoom is made possible
 thanks to the support of awesome backers. If you'd like to join them,
 please consider contributing with
-[Patreon](https://armin.dev/go/patreon?pr=scroll-zoom&src=repo),
-[PayPal](https://armin.dev/go/paypal?pr=scroll-zoom&src=repo) or
-[Bitcoin](https://armin.dev/go/bitcoin?pr=scroll-zoom&src=repo).
+[Patreon](https://go.vapps.dev/patreon?pr=scroll-zoom&src=repo),
+[PayPal](https://go.vapps.dev/paypal?pr=scroll-zoom&src=repo) or
+[Bitcoin](https://go.vapps.dev/bitcoin?pr=scroll-zoom&src=repo).
 
 ## Description
 
@@ -49,7 +49,7 @@ and the customization of zoom levels is also supported.
 
 ## License
 
-Copyright (c) 2017-2024 Armin Sebastian
+Copyright (c) 2017-2026 Armin Sebastian
 
 This software is released under the terms of the GNU General Public License v3.0.
 See the [LICENSE](LICENSE) file for further information.
