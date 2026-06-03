@@ -12,7 +12,7 @@ import {
   setAppVersion,
   getStartupState
 } from 'utils/app';
-import {isValidTab, getPlatform, runOnce} from 'utils/common';
+import {isValidTab, getPlatform, getBrowser, runOnce} from 'utils/common';
 import {targetEnv, mv3} from 'utils/config';
 
 const queue = new Queue({concurrency: 1});
@@ -89,6 +89,8 @@ async function processMessage(request, sender) {
     queue.add(() => resetZoomLevel(sender.tab.id));
   } else if (request.id === 'getPlatform') {
     return getPlatform();
+  } else if (request.id === 'getBrowser') {
+    return getBrowser();
   } else if (request.id === 'optionChange') {
     await onOptionChange();
   }

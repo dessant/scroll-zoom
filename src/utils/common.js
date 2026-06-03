@@ -18,10 +18,14 @@ async function executeScript({
 
   code = ''
 }) {
-  if (mv3) {
-    const params = {target: {tabId, allFrames}, world};
+  if (mv3 || (targetEnv === 'firefox' && (await getBrowserVersion()) >= 128)) {
+    const params = {target: {tabId}, world};
 
-    if (!allFrames) {
+    // Safari 17: allFrames and frameIds cannot both be specified,
+    // fixed in Safari 18.
+    if (allFrames) {
+      params.target.allFrames = true;
+    } else {
       params.target.frameIds = frameIds;
     }
 
@@ -174,6 +178,10 @@ async function getPlatform() {
     os = 'windows';
   } else if (os === 'mac') {
     os = 'macos';
+  } else if (os === 'cros') {
+    os = 'chromeos';
+  } else if (os.includes('bsd')) {
+    os = 'linux';
   }
 
   if (['x86-32', 'i386'].includes(arch)) {
@@ -187,20 +195,22 @@ async function getPlatform() {
   const isWindows = os === 'windows';
   const isMacos = os === 'macos';
   const isLinux = os === 'linux';
+  const isChromeos = os === 'chromeos';
   const isAndroid = os === 'android';
   const isIos = os === 'ios';
   const isIpados = os === 'ipados';
+  const isVisionos = os === 'visionos';
 
   const isMobile = ['android', 'ios', 'ipados'].includes(os);
 
-  const isChrome = targetEnv === 'chrome';
+  const isFirefox = targetEnv === 'firefox';
   const isEdge =
     ['chrome', 'edge'].includes(targetEnv) &&
     /\sedg(?:e|a|ios)?\//i.test(navigator.userAgent);
-  const isFirefox = targetEnv === 'firefox';
   const isOpera =
     ['chrome', 'opera'].includes(targetEnv) &&
     /\sopr\//i.test(navigator.userAgent);
+  const isChrome = targetEnv === 'chrome' && !isEdge && !isOpera;
   const isSafari = targetEnv === 'safari';
   const isSamsung = targetEnv === 'samsung';
 
@@ -211,9 +221,11 @@ async function getPlatform() {
     isWindows,
     isMacos,
     isLinux,
+    isChromeos,
     isAndroid,
     isIos,
     isIpados,
+    isVisionos,
     isMobile,
     isChrome,
     isEdge,
@@ -222,6 +234,22 @@ async function getPlatform() {
     isSafari,
     isSamsung
   };
+}
+
+async function getBrowser() {
+  if (!isBackgroundPageContext()) {
+    return browser.runtime.sendMessage({id: 'getBrowser'});
+  }
+
+  const {name, version} = await browser.runtime.getBrowserInfo();
+
+  return {name: name.toLowerCase(), version: version.toLowerCase()};
+}
+
+async function getBrowserVersion() {
+  const {version} = await getBrowser();
+
+  return parseInt(version.split('.')[0], 10);
 }
 
 function getDarkColorSchemeQuery() {
@@ -237,18 +265,26 @@ function getDayPrecisionEpoch(epoch) {
 }
 
 function isBackgroundPageContext() {
-  const backgroundUrl = mv3
-    ? browser.runtime.getURL('/src/background/script.js')
-    : browser.runtime.getURL('/src/background/index.html');
+  return self.location.href.startsWith(
+    browser.runtime.getURL('/src/background/')
+  );
+}
 
-  return self.location.href === backgroundUrl;
+function getStore(name, {content = null} = {}) {
+  name = `${name}Store`;
+
+  if (!self[name]) {
+    self[name] = content || {};
+  }
+
+  return self[name];
 }
 
 function runOnce(name, func) {
-  name = `${name}Run`;
+  const store = getStore('run');
 
-  if (!self[name]) {
-    self[name] = true;
+  if (!store[name]) {
+    store[name] = true;
 
     if (!func) {
       return true;
@@ -270,9 +306,12 @@ export {
   isValidTab,
   getPlatformInfo,
   getPlatform,
+  getBrowser,
+  getBrowserVersion,
   getDarkColorSchemeQuery,
   getDayPrecisionEpoch,
   isBackgroundPageContext,
+  getStore,
   runOnce,
   sleep
 };
