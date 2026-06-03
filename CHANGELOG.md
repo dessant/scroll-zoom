@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.1.0](https://github.com/dessant/scroll-zoom/compare/v4.0.0...v4.1.0) (2026-06-03)
+
+
+### Features
+
+* upgrade to Manifest V3 in Edge ([c0b494b](https://github.com/dessant/scroll-zoom/commit/c0b494bb2e94b4a5d12abefbe53352d256e79f5e))
+
 ## [4.0.0](https://github.com/dessant/scroll-zoom/compare/v3.0.0...v4.0.0) (2024-05-28)
 
 
