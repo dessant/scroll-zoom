@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.1.1](https://github.com/dessant/scroll-zoom/compare/v4.1.0...v4.1.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* update dependencies ([b657719](https://github.com/dessant/scroll-zoom/commit/b657719f5948ca312223d436dbd4dbc014ccc36b))
+
 ## [4.1.0](https://github.com/dessant/scroll-zoom/compare/v4.0.0...v4.1.0) (2026-06-03)
 
 
