@@ -1,13 +1,7 @@
 import storage from 'storage/storage';
+import {runOnce} from 'utils/common';
 
 function main() {
-  // Script may be injected multiple times.
-  if (self.baseModule) {
-    return;
-  } else {
-    self.baseModule = true;
-  }
-
   let zoomGesture;
   let resetZoomGesture;
   let ignoreZoomGestureSelection;
@@ -227,4 +221,6 @@ function main() {
   init();
 }
 
-main();
+if (runOnce('baseModule')) {
+  main();
+}
