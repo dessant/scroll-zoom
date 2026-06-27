@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.1.2](https://github.com/dessant/scroll-zoom/compare/v4.1.1...v4.1.2) (2026-06-27)
+
+
+### Bug Fixes
+
+* account for undefined InjectionResult ([bd521b0](https://github.com/dessant/scroll-zoom/commit/bd521b02daa6a58c27b6617a4421f22b4300d0af))
+* add scripting permission ([bd3fe51](https://github.com/dessant/scroll-zoom/commit/bd3fe51fd90207e66e4ff4f3e1f59d52ae340534))
+
 ## [4.1.1](https://github.com/dessant/scroll-zoom/compare/v4.1.0...v4.1.1) (2026-06-15)
 
 
