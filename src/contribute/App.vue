@@ -18,6 +18,15 @@ import {Contribute} from 'vueton/components/contribute';
 import {showPage, getAppTheme} from 'utils/app';
 import {getText} from 'utils/common';
 
+window.addEventListener(
+  'contextmenu',
+  function (ev) {
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+  },
+  {capture: true, passive: false, once: true}
+);
+
 export default {
   components: {
     [App.name]: App,
